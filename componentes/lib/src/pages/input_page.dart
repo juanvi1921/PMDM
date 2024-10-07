@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class InputPage extends StatefulWidget {
   @override
@@ -12,30 +13,30 @@ class _InputPageState extends State<InputPage> {
   List<String> _hobbies = ['Leer', 'Ver series', 'Viajar', 'Deporte'];
   String _opcionSeleccionada = 'Leer';
   TextEditingController _inputFileDateController = new TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Inputs de texto'),
-        backgroundColor: Colors.pink,
-      ),
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-        children: [
-          _crearInput(), 
-          Divider(),
-          _crearEmail(),
-          Divider(),
-          _crearPassword(),
-          Divider(),
-          _crearFecha(context),
-          Divider(), 
-          _crearPersona(),
-          Divider(),
-          _crearDropdown()],
-      )
-    );
+        appBar: AppBar(
+          title: Text('Inputs de texto'),
+          backgroundColor: Colors.pink,
+        ),
+        body: ListView(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          children: [
+            _crearInput(),
+            SizedBox(height: 20),
+            _crearEmail(),
+            SizedBox(height: 20),
+            _crearPassword(),
+            SizedBox(height: 20),
+            _crearFecha(context),
+            SizedBox(height: 20),
+            _crearPersona(),
+            SizedBox(height: 20),
+            _crearDropdown()
+          ],
+        ));
   }
 
   Widget _crearDropdown() {
@@ -71,64 +72,69 @@ class _InputPageState extends State<InputPage> {
   }
 
   Widget _crearInput() {
-  return Padding(
-    padding: const EdgeInsets.only(top: 10.0), //He añadido un poco de margen superior en el nombre.
-    child: TextField(
-      textCapitalization: TextCapitalization.sentences,
-      decoration: InputDecoration(
-        counter: Text('Letras ${_nombre.length}'),
-        hintText: 'Nombre de la persona',
-        labelText: 'Nombre',
-        helperText: 'Solo es el nombre',
-        suffixIcon: Icon(Icons.accessibility),
-        icon: Icon(Icons.account_circle),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+    return Padding(
+      padding: const EdgeInsets.only(
+          top: 10.0), //He añadido un poco de margen superior en el nombre.
+      child: TextField(
+        textCapitalization: TextCapitalization.sentences,
+        decoration: InputDecoration(
+          counter: Text('Letras ${_nombre.length}'),
+          hintText: 'Nombre de la persona',
+          labelText: 'Nombre',
+          helperText: 'Solo es el nombre',
+          suffixIcon: Icon(Icons.accessibility),
+          icon: Icon(Icons.account_circle),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+        onChanged: (valor) {
+          setState(() {
+            _nombre = valor;
+          });
+        },
       ),
-      onChanged: (valor) {
-        setState(() {
-          _nombre = valor;
-        });
-      },
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _crearPersona() {
     return ListTile(
-      title: Text('Nombre es: $_nombre'),
-      subtitle: Text('Email: $_email'),
+      title: Text('Mi nombre es: $_nombre'),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+        Text('Email: $_email'),
+        Text('Fecha de nacimiento: $_fecha')
+      ],),
+      contentPadding: EdgeInsets.all(0),
     );
   }
 
   Widget _crearEmail() {
     return TextField(
-      keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-        hintText: 'Email',
-        labelText: 'Email',
-        suffixIcon: Icon(Icons.alternate_email),
-        icon: Icon(Icons.email),
-        border: 
-          OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
-      onChanged: (valor) => setState(() {
-        _email = valor;
-      }));
+        keyboardType: TextInputType.emailAddress,
+        decoration: InputDecoration(
+            hintText: 'Email',
+            labelText: 'Email',
+            suffixIcon: Icon(Icons.alternate_email),
+            icon: Icon(Icons.email),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
+        onChanged: (valor) => setState(() {
+              _email = valor;
+            }));
   }
 
   Widget _crearPassword() {
     return TextField(
-      obscureText: true,
-      decoration: InputDecoration(
-        hintText: 'Password',
-        labelText: 'Password',
-        suffixIcon: Icon(Icons.lock_open),
-        icon: Icon(Icons.lock),
-        border: 
-            OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
-      onChanged: (valor) => setState(() {
-        _email = valor;
-      }));
+        obscureText: true,
+        decoration: InputDecoration(
+            hintText: 'Password',
+            labelText: 'Password',
+            suffixIcon: Icon(Icons.lock_open),
+            icon: Icon(Icons.lock),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
+        onChanged: (valor) => setState(() {
+            }));
   }
 
   Widget _crearFecha(BuildContext context) {
@@ -136,11 +142,11 @@ class _InputPageState extends State<InputPage> {
       enableInteractiveSelection: false,
       controller: _inputFileDateController,
       decoration: InputDecoration(
-        hintText: 'Fecha de nacimiento',
-        labelText: 'Fecha de nacimiento',
-        suffixIcon: Icon(Icons.calendar_today),
-        icon: Icon(Icons.calendar_today),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
+          hintText: 'Fecha de nacimiento',
+          labelText: 'Fecha de nacimiento',
+          suffixIcon: Icon(Icons.calendar_today),
+          icon: Icon(Icons.calendar_today),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
         _selectDate(context);
@@ -150,14 +156,14 @@ class _InputPageState extends State<InputPage> {
 
   _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: new DateTime.now(),
-      firstDate: new DateTime(2018),
-      lastDate: new DateTime(2026));
+        context: context,
+        initialDate: new DateTime.now(),
+        firstDate: new DateTime(2018),
+        lastDate: new DateTime(2026));
 
     if (picked != null) {
       setState(() {
-        _fecha = picked.toString();
+        _fecha = DateFormat('yyyy-MM-dd').format(picked);
         _inputFileDateController.text = _fecha;
       });
     }
