@@ -100,7 +100,7 @@ class _CardPageState extends State<CardPage> {
         children: [
           const FadeInImage(
             image: NetworkImage(
-                'https://st5.depositphotos.com/10440072/65939/i/450/depositphotos_659390638-stock-photo-awesome-nature-landscape-beautiful-scene.jpg'),
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfqfnWVWFzvFCRW6dX2MB6Cnho6uaLjltLNQ&s'),
             placeholder: AssetImage('assets/jar-loading.gif'),
             fadeInDuration: Duration(milliseconds: 10),
             height: 250,
@@ -108,7 +108,7 @@ class _CardPageState extends State<CardPage> {
           ),
           Container(
             padding: EdgeInsets.all(10),
-            child: Text('Canada'),
+            child: Text('Francia'),
           )
         ],
       ),
@@ -136,7 +136,7 @@ class _CardPageState extends State<CardPage> {
         children: [
           const FadeInImage(
             image: NetworkImage(
-                'https://st5.depositphotos.com/10440072/65939/i/450/depositphotos_659390638-stock-photo-awesome-nature-landscape-beautiful-scene.jpg'),
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6jgeJSFd4x8FBpAoCoiVvryBHB64H93YKhQ&s'),
             placeholder: AssetImage('assets/jar-loading.gif'),
             fadeInDuration: Duration(milliseconds: 10),
             height: 250,
@@ -144,7 +144,7 @@ class _CardPageState extends State<CardPage> {
           ),
           Container(
             padding: EdgeInsets.all(10),
-            child: Text('Canada'),
+            child: Text('España'),
           )
         ],
       ),
