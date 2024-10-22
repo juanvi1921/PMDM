@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peliculas/models/movie.dart';
 import 'package:peliculas/widgets/casting_cards.dart';
 
 class DetailsScreen extends StatelessWidget {
@@ -7,19 +8,19 @@ class DetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final String movie = ModalRoute.of(context)?.settings.arguments.toString() ?? 'no-movie';
+    final Movie movie = ModalRoute.of(context)!.settings.arguments as Movie;
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const _CustomappBar(),
+          _CustomappBar(movie: movie),
           SliverList(delegate: SliverChildListDelegate([
             Padding(padding: const EdgeInsets.all(10),
-            child: Text(movie,
-            style: textTheme.headlineSmall)),
-          const _PosterAndTitle(),
-          const _Overview(),
-          const _Overview(),
-          const CastingCards()
+            child: Text(
+              movie.title,
+              style: textTheme.headlineSmall)),
+          _PosterAndTitle(movie: movie),
+          _Overview(overview: movie.overview),
+          CastingCards(idMovie: movie.id,)
           ]))
         ],
       ),
@@ -28,7 +29,8 @@ class DetailsScreen extends StatelessWidget {
 }
 
 class _CustomappBar extends StatelessWidget {
-  const _CustomappBar({super.key});
+  final Movie movie;
+  const _CustomappBar({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +48,13 @@ class _CustomappBar extends StatelessWidget {
           width: double.infinity,
           alignment: Alignment.bottomCenter,
           color: Colors.black12,
-          child: const Text('movie.title', style: TextStyle(color: Colors.white),)),
-        background: const FadeInImage(
-          placeholder:  AssetImage('assets/no-image.jpg'), 
-          image: NetworkImage('https://fakeimg.pl/500x300'), 
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Text(movie.title, style: const TextStyle(color: Colors.white),),
+          )),
+        background: FadeInImage(
+          placeholder:  const AssetImage('assets/no-image.jpg'), 
+          image: NetworkImage(movie.fullBackdropPath), 
           fit: BoxFit.cover,),
       ),
     );
@@ -57,46 +62,51 @@ class _CustomappBar extends StatelessWidget {
 }
 
 class _PosterAndTitle extends StatelessWidget {
-  const _PosterAndTitle({super.key});
+  final Movie movie;
+  const _PosterAndTitle({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final size = MediaQuery.of(context).size;
     return Container(
       margin: const EdgeInsets.only(top: 20),
       padding: const EdgeInsets.only(right: 20, left: 20),
       child: Row(children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(20),
-          child: const FadeInImage(
-            placeholder: AssetImage('assets/no-image.jpg'), 
-            image: NetworkImage('https://fakeimg.pl/200x300'), 
+          child: FadeInImage(
+            placeholder: const AssetImage('assets/no-image.jpg'), 
+            image: NetworkImage(movie.fullPosterImg), 
             height: 150),
         ),
         const SizedBox(width: 20),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Text movie',
-              style: textTheme.headlineSmall,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-            Text(
-              'movie.originalTitle',
-              style: textTheme.titleMedium,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+        ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: size.width - 190),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                movie.title,
+                style: textTheme.headlineSmall,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
               ),
-              Row(
-                children: [
-                  const Icon(Icons.star_outline_outlined, size: 15, color: Colors.grey,),
-                  const SizedBox(width: 5,),
-                  Text('Movie.voteAverage', style: textTheme.bodySmall,)
-                ],
-              )
-          ],
+              Text(
+                movie.originalTitle,
+                style: textTheme.titleMedium,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                ),
+                Row(
+                  children: [
+                    const Icon(Icons.star_outline_outlined, size: 15, color: Colors.grey,),
+                    const SizedBox(width: 5,),
+                    Text('${movie.voteAverage}', style: textTheme.bodySmall,)
+                  ],
+                )
+            ],
+          ),
         )
       ],),
     );
@@ -104,14 +114,15 @@ class _PosterAndTitle extends StatelessWidget {
 }
 
 class _Overview extends StatelessWidget {
-  const _Overview({super.key});
+  final String overview;
+  const _Overview({super.key, required this.overview});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Text('Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas "Letraset", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.', textAlign: TextAlign.justify, style: textTheme.bodySmall,),
+      child: Text(overview, textAlign: TextAlign.justify, style: textTheme.bodySmall,),
     );
   }
 }

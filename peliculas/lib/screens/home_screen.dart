@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
     print(moviesProvider.onDisplayMovies);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Peliculas en cines', style: TextStyle(color: Colors.white),),
+        title: const Text('Pel·lícules en cinemes', style: TextStyle(color: Colors.white),),
         actions: const [Padding(
           padding: EdgeInsets.only(right: 10.0),
           child: Icon(Icons.search_outlined, color: Colors.white,),
@@ -24,8 +24,8 @@ class HomeScreen extends StatelessWidget {
             CardSwiper(movies: moviesProvider.onDisplayMovies),
             //Slider de peliculas 
             MovieSlider(
-              movies: moviesProvider.onDisplayMovies, 
-              title: 'Populares',
+              movies: moviesProvider.getPopularMoviesList, 
+              title: 'Populars',
               onNextPage: () => moviesProvider.getPopularMovies(),)],
         ),
       ),
