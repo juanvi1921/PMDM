@@ -1,9 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:peliculas/models/movie.dart';
-class MovieSlider extends StatelessWidget {
-  const MovieSlider({super.key, required this.movies, this.title});
+
+class MovieSlider extends StatefulWidget {
+  const MovieSlider(
+      {super.key, required this.movies, this.title, required this.onNextPage});
   final List<Movie> movies;
   final String? title;
+  final Function onNextPage;
+
+  @override
+  State<MovieSlider> createState() => _MovieSliderState();
+}
+
+class _MovieSliderState extends State<MovieSlider> {
+  final ScrollController scrollController = new ScrollController();
+  @override
+  void initState() {
+    super.initState();
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 500) {
+        widget.onNextPage();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +41,20 @@ class MovieSlider extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (title != null) ...[
-            Padding(padding: EdgeInsets.all(10),
-            child: Text(title!,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),))
+          if (widget.title != null) ...[
+            Padding(
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  widget.title!,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ))
           ],
-          Expanded(child: ListView.builder(
-            itemCount: movies.length,
+          Expanded(
+              child: ListView.builder(
+            itemCount: widget.movies.length,
             itemBuilder: (context, index) {
-              return _MoviePoster(movie:movies[index]);
+              return _MoviePoster(movie: widget.movies[index]);
             },
             scrollDirection: Axis.horizontal,
           ))
@@ -40,30 +72,33 @@ class _MoviePoster extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 130,
-      height: 190,
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, 
-              'details',
-              arguments: movie,);
-            },
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              child: FadeInImage(placeholder: const AssetImage('assets/no-image.jpg'), 
-              image: NetworkImage(movie.fullPosterImg))),
-          ),
-          const SizedBox(height: 5),
-          Text(
-          movie.title, 
-          maxLines: 2, 
-          overflow: TextOverflow.ellipsis, 
-          textAlign: TextAlign.center,)
-        ],
-      )
-      );
+        width: 130,
+        height: 190,
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  'details',
+                  arguments: movie,
+                );
+              },
+              child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  child: FadeInImage(
+                      placeholder: const AssetImage('assets/no-image.jpg'),
+                      image: NetworkImage(movie.fullPosterImg))),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              movie.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            )
+          ],
+        ));
   }
 }
