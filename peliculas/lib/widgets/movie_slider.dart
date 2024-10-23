@@ -48,7 +48,7 @@ class _MovieSliderState extends State<MovieSlider> {
                   widget.title!,
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.bold),
-                ))
+                )),
           ],
           Expanded(
               child: ListView.builder(
@@ -72,6 +72,7 @@ class _MoviePoster extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    movie.uniqueId = '${movie.id}-poster';
     return Container(
         width: 130,
         height: 190,
@@ -86,13 +87,16 @@ class _MoviePoster extends StatelessWidget {
                   arguments: movie,
                 );
               },
-              child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  child: FadeInImage(
-                      placeholder: const AssetImage('assets/no-image.jpg'),
-                      image: NetworkImage(movie.fullPosterImg))),
+              child: Hero(
+                tag: movie.uniqueId!,
+                child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    child: FadeInImage(
+                        placeholder: const AssetImage('assets/no-image.jpg'),
+                        image: NetworkImage(movie.fullPosterImg))),
+              ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 4),
             Text(
               movie.title,
               maxLines: 2,

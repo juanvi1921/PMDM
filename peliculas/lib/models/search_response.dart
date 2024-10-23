@@ -1,6 +1,40 @@
 import 'dart:convert';
-import 'package:peliculas/models/now_playing_response.dart';
 
+import 'package:peliculas/models/movie.dart';
+
+class SearchResponse {
+    int page;
+    List<Movie> results;
+    int totalPages;
+    int totalResults;
+
+    SearchResponse({
+        required this.page,
+        required this.results,
+        required this.totalPages,
+        required this.totalResults,
+    });
+
+    factory SearchResponse.fromJson(String str) => SearchResponse.fromMap(json.decode(str));
+
+    //String toJson() => json.encode(toMap());
+
+    factory SearchResponse.fromMap(Map<String, dynamic> json) => SearchResponse(
+        page: json["page"],
+        results: List<Movie>.from(json["results"].map((x) => Movie.fromMap(x))),
+        totalPages: json["total_pages"],
+        totalResults: json["total_results"],
+    );
+/*
+    Map<String, dynamic> toMap() => {
+        "page": page,
+        "results": List<dynamic>.from(results.map((x) => x.toMap())),
+        "total_pages": totalPages,
+        "total_results": totalResults,
+    };
+    */
+}
+/*
 class Movie {
     bool adult;
     String? backdropPath;
@@ -11,45 +45,27 @@ class Movie {
     String overview;
     double popularity;
     String? posterPath;
-    String? releaseDate;
+    String releaseDate;
     String title;
     bool video;
     double voteAverage;
     int voteCount;
-    String? uniqueId;
-
-    String get fullPosterImg {
-      if (posterPath != null) {
-        return 'https://image.tmdb.org/t/p/w500/$posterPath';
-      } else {
-        return 'https://i.stack.imgur.com/GNhxO.png';
-      }
-    }
-
-    String get fullBackdropPath {
-      if (backdropPath != null) {
-        return 'https://image.tmdb.org/t/p/w500$backdropPath';
-      } else {
-        return 'https://i.stack.imgur.com/GNhxO.png';
-      }
-    }
 
     Movie({
         required this.adult,
-        this.backdropPath,
+        required this.backdropPath,
         required this.genreIds,
         required this.id,
         required this.originalLanguage,
         required this.originalTitle,
         required this.overview,
         required this.popularity,
-        this.posterPath,
-        this.releaseDate,
+        required this.posterPath,
+        required this.releaseDate,
         required this.title,
         required this.video,
         required this.voteAverage,
         required this.voteCount,
-        this.uniqueId
     });
 
     factory Movie.fromJson(String str) => Movie.fromMap(json.decode(str));
@@ -71,7 +87,6 @@ class Movie {
         video: json["video"],
         voteAverage: json["vote_average"]?.toDouble(),
         voteCount: json["vote_count"],
-        uniqueId: json["unique_id"],
     );
 
     Map<String, dynamic> toMap() => {
@@ -79,7 +94,7 @@ class Movie {
         "backdrop_path": backdropPath,
         "genre_ids": List<dynamic>.from(genreIds.map((x) => x)),
         "id": id,
-        "original_language": originalLanguageValues.reverse[originalLanguage],
+        "original_language": originalLanguage,
         "original_title": originalTitle,
         "overview": overview,
         "popularity": popularity,
@@ -89,6 +104,6 @@ class Movie {
         "video": video,
         "vote_average": voteAverage,
         "vote_count": voteCount,
-        "unique_id": uniqueId,
     };
 }
+*/
