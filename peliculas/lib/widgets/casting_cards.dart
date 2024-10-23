@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 class CastingCards extends StatelessWidget {
   final int idMovie;
+  
   const CastingCards({super.key, required this.idMovie});
 
   @override
@@ -15,7 +16,7 @@ class CastingCards extends StatelessWidget {
       future: moviesProvider.getMoviesCast(idMovie),
       builder: (BuildContext context, AsyncSnapshot<List<Cast>> snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator(),);
+          return const Center(child: CircularProgressIndicator());
         }
 
         final List<Cast> cast = snapshot.data!;
@@ -28,11 +29,9 @@ class CastingCards extends StatelessWidget {
             itemCount: cast.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (BuildContext context, int index) {
-              return _CastCard(
-                actorName: cast[index].name,
-                profilePath: cast[index].profilePath,
-              );
-            }),
+              return _CastCard(cast: cast[index]); // Pasar el objeto Cast completo
+            }
+          ),
         );
       },
     );
@@ -40,32 +39,49 @@ class CastingCards extends StatelessWidget {
 }
 
 class _CastCard extends StatelessWidget {
-  final String actorName;
-  final String? profilePath;
-  const _CastCard({super.key, required this.actorName, this.profilePath});
+  final Cast cast; // Cambia esto para recibir el objeto Cast completo
+
+  const _CastCard({super.key, required this.cast});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      width: 110,
-      height: 100,
-      child: Column(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: FadeInImage(
-              height: 140,
-              width: 100,
-              placeholder: const AssetImage('assets/no-image.jpg') , 
-              image: NetworkImage(profilePath != null
-              ? 'https://image.tmdb.org/t/p/w500$profilePath'
-              : 'https://fakeimg.pl/150x300'
+    return GestureDetector( // Usa GestureDetector para manejar el toque
+      onTap: () async {
+        // Obtén el detalle del actor usando el id del cast
+        final moviesProvider = Provider.of<MoviesProvider>(context, listen: false);
+        final actorDetails = await moviesProvider.getActorDetails(cast.id); // Obtén ActorResponse aquí
+
+        // Navegar a la pantalla de detalles del actor
+        Navigator.pushNamed(
+          context,
+          'actor_details', // Asegúrate de que este nombre coincida con tu ruta
+          arguments: actorDetails, // Pasa el objeto ActorResponse como argumento
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        width: 110,
+        height: 100,
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: FadeInImage(
+                height: 140,
+                width: 100,
+                placeholder: const AssetImage('assets/no-image.jpg'), 
+                image: NetworkImage(cast.fullProfilePath), // Usa el método fullProfilePath
+                fit: BoxFit.cover,
               ),
-              fit: BoxFit.cover),),
-          //SizedBox(height: 5,),
-          Text(actorName, maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center,) 
-        ],
+            ),
+            Text(
+              cast.name, 
+              maxLines: 2, 
+              overflow: TextOverflow.ellipsis, 
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -8,7 +8,6 @@ class MovieSearchDelegate extends SearchDelegate {
   
   @override
   List<Widget>? buildActions(BuildContext context) {
-    // TODO: implement buildActions
     return [
       IconButton (
       onPressed: () => query = '',
@@ -18,7 +17,6 @@ class MovieSearchDelegate extends SearchDelegate {
 
   @override
   Widget? buildLeading(BuildContext context) {
-    // TODO: implement buildLeading
     return IconButton(
       onPressed: () {
         print('Boton de vuelta');
@@ -29,21 +27,22 @@ class MovieSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
     return Text('');
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // TODO: implement buildSuggestions
     if (query.isEmpty) {
       return _emptyContainer();
     }
 
     final moviesProvider = Provider.of<MoviesProvider>(context, listen: false);
 
-    return FutureBuilder<List<Movie>>(
-      future: moviesProvider.searchMovies(query),
+    moviesProvider.getSuggestionsByQuery(query);
+
+    return StreamBuilder<List<Movie>>(
+      stream: moviesProvider.suggestionStream,
+      //future: moviesProvider.searchMovies(query),
       builder: (_, AsyncSnapshot<List<Movie>> snapshot) {
         if (snapshot.hasData) {
           final movies = snapshot.data!;
