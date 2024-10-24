@@ -25,6 +25,8 @@ class SearchResponse {
         totalPages: json["total_pages"],
         totalResults: json["total_results"],
     );
+}
+
 /*
     Map<String, dynamic> toMap() => {
         "page": page,
@@ -33,7 +35,6 @@ class SearchResponse {
         "total_results": totalResults,
     };
     */
-}
 /*
 class Movie {
     bool adult;
