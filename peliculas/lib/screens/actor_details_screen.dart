@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:peliculas/models/actor_response.dart';
-import 'package:peliculas/providers/movies_provider.dart';  // Para acceder a MoviesProvider
-import 'package:provider/provider.dart';  // Para el manejo del Provider
-import 'package:peliculas/widgets/actor_card.dart'; // Asegúrate de importar el nuevo archivo
+import 'package:peliculas/providers/movies_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:peliculas/widgets/actor_card.dart';
 
 class ActorDetailsScreen extends StatelessWidget {
   const ActorDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ActorResponse actor = ModalRoute.of(context)!.settings.arguments as ActorResponse;
+    final ActorResponse actor =
+        ModalRoute.of(context)!.settings.arguments as ActorResponse;
     final moviesProvider = Provider.of<MoviesProvider>(context, listen: false);
 
     return Scaffold(
@@ -21,8 +22,9 @@ class ActorDetailsScreen extends StatelessWidget {
               [
                 _PosterAndTitle(actor: actor),
                 _Biography(biography: actor.biography),
-                const SizedBox(height: 20),  // Espacio para separar
-                MoviesByActor(actorId: actor.id, moviesProvider: moviesProvider),  // Ahora usas el nuevo widget
+                const SizedBox(height: 20),
+                MoviesByActor(
+                    actorId: actor.id, moviesProvider: moviesProvider),
               ],
             ),
           ),
@@ -52,7 +54,8 @@ class _CustomAppBar extends StatelessWidget {
           color: Colors.black12,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text(actor.name, style: const TextStyle(color: Colors.white)),
+            child:
+                Text(actor.name, style: const TextStyle(color: Colors.white)),
           ),
         ),
         background: FadeInImage(
@@ -87,9 +90,10 @@ class _PosterAndTitle extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
-              const Icon(Icons.star_outline_outlined, size: 15, color: Colors.grey),
+              const Icon(Icons.star_outline_outlined,
+                  size: 15, color: Colors.grey),
               const SizedBox(width: 5),
-              Text('${actor.popularity}', style: textTheme.bodySmall),
+              Text(actor.roundedPopularity, style: textTheme.bodySmall),
             ],
           ),
           if (actor.placeOfBirth != null)

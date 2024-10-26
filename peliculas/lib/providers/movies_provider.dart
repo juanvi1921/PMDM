@@ -5,7 +5,7 @@ import 'package:peliculas/helpers/debouncer.dart';
 import 'package:peliculas/models/actor_response.dart';
 import 'package:peliculas/models/credits_response.dart';
 import 'package:peliculas/models/movie.dart';
-import 'package:peliculas/models/movie_redits_response.dart';
+import 'package:peliculas/models/movie_credits_response.dart';
 import 'package:peliculas/models/now_playing_response.dart';
 import 'package:peliculas/models/popular_response.dart';
 import 'package:peliculas/models/search_response.dart';
@@ -23,9 +23,9 @@ Future<String> _getJsonData(String endpoint, [int page = 1]) async {
   });
   final response = await http.get(url);
 
-  // Manejo de errores para la respuesta
   if (response.statusCode != 200) {
-    throw Exception('Error en la conexión con el servidor: ${response.statusCode}');
+    throw Exception(
+        'Error en la conexión con el servidor: ${response.statusCode}');
   }
 
   return response.body;
@@ -35,12 +35,14 @@ class MoviesProvider extends ChangeNotifier {
   int _popularPage = 0;
   List<Movie> onDisplayMovies = [];
   List<Movie> popularMovies = [];
-  List<Movie> searchedMovies = []; // Renombrado para evitar conflicto
+  List<Movie> searchedMovies = [];
   Map<int, List<Cast>> moviesCast = {};
 
-  final StreamController<List<Movie>> _sugestionsStreamController = StreamController.broadcast();
+  final StreamController<List<Movie>> _sugestionsStreamController =
+      StreamController.broadcast();
 
-  Stream<List<Movie>> get suggestionStream => this._sugestionsStreamController.stream;
+  Stream<List<Movie>> get suggestionStream =>
+      this._sugestionsStreamController.stream;
 
   final debouncer = Debouncer(duration: const Duration(milliseconds: 500));
 
@@ -53,7 +55,7 @@ class MoviesProvider extends ChangeNotifier {
   getOnDisplayMovies() async {
     final jsonData = await _getJsonData('3/movie/now_playing', 1);
     final nowPlayingResponse = NowPlayingResponse.fromJson(jsonData);
-    
+
     onDisplayMovies = nowPlayingResponse.results;
     notifyListeners();
   }
@@ -62,7 +64,7 @@ class MoviesProvider extends ChangeNotifier {
     _popularPage++;
     final jsonData = await _getJsonData('3/movie/popular', _popularPage);
     final popularResponse = PopularResponse.fromJson(jsonData);
-    
+
     popularMovies = [...popularMovies, ...popularResponse.movies];
     notifyListeners();
   }
@@ -72,7 +74,7 @@ class MoviesProvider extends ChangeNotifier {
       print('El cast ya está almacenado, no se hace nueva petición');
       return moviesCast[idMovie]!;
     }
-    
+
     print('Pidiendo info al servidor');
     final jsonData = await _getJsonData('3/movie/$idMovie/credits');
     final creditsResponse = CreditsResponse.fromJson(jsonData);
@@ -84,10 +86,10 @@ class MoviesProvider extends ChangeNotifier {
 
   Future<List<Movie>> searchMovies(String query) async {
     final url = Uri.https(_baseUrl, '3/search/movie',
-      {'api_key': _apikey, 'language': _language, 'query': query});
+        {'api_key': _apikey, 'language': _language, 'query': query});
 
     final response = await http.get(url);
-    
+
     if (response.statusCode == 200) {
       final searchResponse = SearchResponse.fromJson(response.body);
       return searchResponse.results;
@@ -100,7 +102,7 @@ class MoviesProvider extends ChangeNotifier {
     debouncer.value = '';
     debouncer.onValue = (value) async {
       print('Tenemos valor a buscar: $value');
-      final results = await this.searchMovies(value); // Ahora llama al método correctamente
+      final results = await this.searchMovies(value);
       this._sugestionsStreamController.add(results);
     };
 
@@ -112,30 +114,30 @@ class MoviesProvider extends ChangeNotifier {
   }
 
   Future<ActorResponse> getActorDetails(int actorId) async {
-    final response = await http.get(Uri.parse('https://api.themoviedb.org/3/person/$actorId?api_key=$_apikey'));
+    final response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/person/$actorId?api_key=$_apikey'));
 
     if (response.statusCode == 200) {
       return ActorResponse.fromJson(response.body);
     } else {
-      print('Error: ${response.statusCode} - ${response.body}'); // Para depuración
+      print('Error: ${response.statusCode} - ${response.body}');
       throw Exception('Error al cargar detalles del actor');
     }
   }
 
- Future<List<Movie>> getMoviesByActor(int actorId) async {
-  final response = await http.get(
-    Uri.parse('https://api.themoviedb.org/3/person/$actorId/movie_credits?api_key=$_apikey&language=$_language')
-  );
+  Future<List<Movie>> getMoviesByActor(int actorId) async {
+    final response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/person/$actorId/movie_credits?api_key=$_apikey&language=$_language'));
 
-  if (response.statusCode == 200) {
-    final movieCreditsResponse = MovieCreditsResponse.fromJson(response.body);
-    return movieCreditsResponse.cast; // Retorna las películas del actor
-  } else {
-    throw Exception('Error al cargar películas del actor');
+    if (response.statusCode == 200) {
+      final movieCreditsResponse = MovieCreditsResponse.fromJson(response.body);
+      return movieCreditsResponse.cast;
+    } else {
+      throw Exception('Error al cargar películas del actor');
+    }
   }
-}
 
   List<Movie> get movies => onDisplayMovies;
   List<Movie> get getPopularMoviesList => popularMovies;
-  List<Movie> get getSearchedMovies => searchedMovies; // Cambiado para usar la nueva lista
+  List<Movie> get getSearchedMovies => searchedMovies;
 }

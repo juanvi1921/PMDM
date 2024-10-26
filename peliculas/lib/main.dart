@@ -15,7 +15,8 @@ class MyApp extends StatelessWidget {
       title: 'Peliculas',
       initialRoute: '/',
       routes: getApplicationRoutes(),
-      theme: ThemeData.light().copyWith(appBarTheme: const AppBarTheme(color: Colors.indigo)),
+      theme: ThemeData.light()
+          .copyWith(appBarTheme: const AppBarTheme(color: Colors.indigo)),
     );
   }
 }
@@ -25,11 +26,14 @@ class AppState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(providers: [
-      ChangeNotifierProvider(
-        create: (_) => MoviesProvider(),
-        lazy: false,)
-    ],
-    child: const MyApp(),);
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => MoviesProvider(),
+          lazy: false,
+        )
+      ],
+      child: const MyApp(),
+    );
   }
 }

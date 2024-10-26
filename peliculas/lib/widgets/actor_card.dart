@@ -6,29 +6,26 @@ import 'package:peliculas/providers/movies_provider.dart';
 class ActorCard extends StatelessWidget {
   final ActorResponse actor;
 
-  const ActorCard({Key? key, required this.actor}) : super(key: key);
+  const ActorCard({super.key, required this.actor});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navegar a la pantalla de detalles del actor
         Navigator.pushNamed(
           context,
-          'actor_details', // Asegúrate de que este nombre coincida con tu ruta
-          arguments: actor, // Pasa el actor como argumento
+          'actor_details',
+          arguments: actor,
         );
       },
       child: Card(
         child: Column(
           children: [
-            // Mostrar la imagen del actor
             FadeInImage(
               placeholder: const AssetImage('assets/no-image.jpg'),
               image: NetworkImage(actor.fullProfilePath),
               fit: BoxFit.cover,
             ),
-            // Mostrar el nombre del actor
             Text(actor.name),
           ],
         ),
@@ -37,50 +34,62 @@ class ActorCard extends StatelessWidget {
   }
 }
 
-// Widget para mostrar las películas en las que ha participado el actor
 class MoviesByActor extends StatelessWidget {
   final int actorId;
   final MoviesProvider moviesProvider;
 
-  const MoviesByActor({super.key, required this.actorId, required this.moviesProvider});
+  const MoviesByActor(
+      {super.key, required this.actorId, required this.moviesProvider});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Movie>>(
-      future: moviesProvider.getMoviesByActor(actorId),  // Llama a la función para obtener las películas
-      builder: (BuildContext context, AsyncSnapshot<List<Movie>> snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());  // Muestra un loader mientras carga
-        }
-
-        final movies = snapshot.data!;  // Lista de películas
-
-        if (movies.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Text('Este actor no tiene películas disponibles.', textAlign: TextAlign.center),
-          );
-        }
-
-        return Container(
-          width: double.infinity,
-          height: 180,
-          margin: const EdgeInsets.only(bottom: 30),
-          child: ListView.builder(
-            itemCount: movies.length,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (BuildContext context, int index) {
-              final movie = movies[index];
-              return MoviePoster(movie: movie);  // Muestra el poster de la película
-            },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Text(
+            'Pel·lícules on ha actuat',
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
-        );
-      },
+        ),
+        FutureBuilder<List<Movie>>(
+          future: moviesProvider.getMoviesByActor(actorId),
+          builder: (BuildContext context, AsyncSnapshot<List<Movie>> snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final movies = snapshot.data!;
+
+            if (movies.isEmpty) {
+              return const Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text('Este actor no tiene películas disponibles.',
+                    textAlign: TextAlign.center),
+              );
+            }
+
+            return Container(
+              width: double.infinity,
+              height: 180,
+              margin: const EdgeInsets.only(bottom: 30),
+              child: ListView.builder(
+                itemCount: movies.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int index) {
+                  final movie = movies[index];
+                  return MoviePoster(movie: movie);
+                },
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }
 
-// Widget para mostrar el poster de la película
 class MoviePoster extends StatelessWidget {
   final Movie movie;
 
@@ -88,16 +97,14 @@ class MoviePoster extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Asigna el uniqueId antes de usarlo
-    movie.uniqueId = '${movie.id}-poster'; // Esto es clave
+    movie.uniqueId = '${movie.id}-poster';
 
     return GestureDetector(
       onTap: () {
-        // Navegar a la pantalla de detalles de la película
         Navigator.pushNamed(
           context,
-          'details', // Ruta de la pantalla de detalles de la película
-          arguments: movie, // Pasa el objeto `Movie` como argumento
+          'details',
+          arguments: movie,
         );
       },
       child: Container(
@@ -106,18 +113,18 @@ class MoviePoster extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,  // Alinea a la izquierda
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Hero(
-              tag: movie.uniqueId!, // Usa el uniqueId para el Hero
+              tag: movie.uniqueId!,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: FadeInImage(
-                  image: NetworkImage(movie.fullPosterImg),  // Asegúrate de que este método exista en Movie
+                  image: NetworkImage(movie.fullPosterImg),
                   placeholder: const AssetImage('assets/no-image.jpg'),
                   fit: BoxFit.cover,
-                  height: 140,  // Ajusta el alto del poster
-                  width: 100,   // Ajusta el ancho del poster
+                  height: 140,
+                  width: 100,
                 ),
               ),
             ),
@@ -128,7 +135,7 @@ class MoviePoster extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12),  // Ajusta el tamaño del texto si es necesario
+                style: const TextStyle(fontSize: 12),
               ),
             ),
           ],

@@ -12,26 +12,37 @@ class HomeScreen extends StatelessWidget {
     print(moviesProvider.onDisplayMovies);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pel·lícules en cinemes', style: TextStyle(color: Colors.white),),
-        actions: [Padding(
-          padding: const EdgeInsets.only(right: 10.0),
-          child: IconButton(
-            icon: const Icon(Icons.search_outlined, color: Colors.white,),
-            onPressed: () {
-              showSearch(context: context, delegate: MovieSearchDelegate());
-            },
-        ),)],
+        title: const Text(
+          'Pel·lícules en cinemes',
+          style: TextStyle(color: Colors.white),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: IconButton(
+              icon: const Icon(
+                Icons.search_outlined,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                showSearch(context: context, delegate: MovieSearchDelegate());
+              },
+            ),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             //Tarjetas principales
             CardSwiper(movies: moviesProvider.onDisplayMovies),
-            //Slider de peliculas 
+            //Slider de peliculas
             MovieSlider(
-              movies: moviesProvider.getPopularMoviesList, 
+              movies: moviesProvider.getPopularMoviesList,
               title: 'Populars',
-              onNextPage: () => moviesProvider.getPopularMovies(),)],
+              onNextPage: () => moviesProvider.getPopularMovies(),
+            )
+          ],
         ),
       ),
     );

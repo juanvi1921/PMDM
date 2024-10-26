@@ -52,9 +52,9 @@ class _MovieSliderState extends State<MovieSlider> {
           ],
           Expanded(
               child: ListView.builder(
-                controller: scrollController,
-                itemCount: widget.movies.length,
-                itemBuilder: (context, index) {
+            controller: scrollController,
+            itemCount: widget.movies.length,
+            itemBuilder: (context, index) {
               return _MoviePoster(movie: widget.movies[index]);
             },
             scrollDirection: Axis.horizontal,

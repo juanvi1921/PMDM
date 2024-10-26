@@ -28,7 +28,6 @@ class MovieSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    // Mostrar los mismos resultados que en buildSuggestions
     if (query.isEmpty) {
       return _emptyContainer();
     }
@@ -64,7 +63,6 @@ class MovieSearchDelegate extends SearchDelegate {
 
     return StreamBuilder<List<Movie>>(
         stream: moviesProvider.suggestionStream,
-        //future: moviesProvider.searchMovies(query),
         builder: (_, AsyncSnapshot<List<Movie>> snapshot) {
           if (snapshot.hasData) {
             final movies = snapshot.data!;

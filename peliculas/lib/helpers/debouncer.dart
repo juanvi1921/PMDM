@@ -1,13 +1,11 @@
 import 'dart:async';
 
-// Creditos
-// https://stackoverflow.com/a/52922130/7834829
 class Debouncer<T> {
   Debouncer(
       {
 //Cantidad de tiempo que yo quiero esperar antes de emitir un valor
       required this.duration,
-// Método que dispararemos cuando ya tengamos un valor
+//Método que dispararemos cuando ya tengamos un valor
       this.onValue});
   final Duration duration;
   void Function(T value)? onValue;
