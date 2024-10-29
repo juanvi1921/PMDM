@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_reader/providers/db_provider.dart';
 import 'package:qr_reader/providers/ui_provider.dart';
 import 'package:qr_reader/screens/addresses_page.dart';
 import 'package:qr_reader/screens/maps_page.dart';
@@ -9,6 +10,7 @@ import 'package:qr_reader/widgets/scan_button.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    DbProvider.db.dataBase;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Historial'),

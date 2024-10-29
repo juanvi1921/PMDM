@@ -7,9 +7,7 @@ import 'package:path/path.dart';
 class DbProvider {
   static Database? _database;
 
-  static final DbProvider instance = DbProvider._();
-
-  static var db;
+  static final DbProvider db = DbProvider._();
 
   DbProvider._();
 
