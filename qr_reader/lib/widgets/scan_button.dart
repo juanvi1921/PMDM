@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:provider/provider.dart';
+import 'package:qr_reader/models/scan_model.dart';
+import 'package:qr_reader/providers/scan_list_provider.dart';
+import 'package:qr_reader/utils/utils.dart'; // Importa el archivo de utilidades
 
 class ScanButton extends StatelessWidget {
   const ScanButton({super.key});
@@ -16,24 +19,13 @@ class ScanButton extends StatelessWidget {
         );
       },
       elevation: 0,
-      child: const Icon(Icons.filter_center_focus),
+      child: const Icon(Icons.filter_center_focus, color: Colors.white,),
     );
   }
 }
 
 class QRScanScreen extends StatelessWidget {
   const QRScanScreen({super.key});
-
-  Future<void> _launchURL(BuildContext context, String url) async {
-    if (await canLaunchUrlString(url)) {
-      await launchUrlString(url, mode: LaunchMode.externalApplication);
-    } else {
-      print('No se pudo abrir la URL: $url');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No se pudo abrir la URL: $url')),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +38,18 @@ class QRScanScreen extends StatelessWidget {
             final String? code = barcode.rawValue;
             if (code != null) {
               print('Código escaneado: $code');
-              _launchURL(context, Uri.encodeFull(code)); // Llama a _launchURL pasando context
+
+              // Crear un ScanModel para pasar a la función launchURL
+              final scan = ScanModel(valor: code);
+
+              //Guardar el escaneo
+              final scanListProvider = Provider.of<ScanListProvider>(context, listen: false);
+              scanListProvider.newScan(scan.valor);
+              
+              launchURL(context, scan); // Llama a launchURL en vez de _launchURL
+              
               // Cierra el escáner después de un escaneo exitoso
-              //Navigator.pop(context); // Regresa a la pantalla anterior
+              Navigator.pop(context); // Regresa a la pantalla anterior
               break; // Sal del bucle después de escanear el primer código
             }
           }

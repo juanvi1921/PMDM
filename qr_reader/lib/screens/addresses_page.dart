@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:qr_reader/widgets/scan_tiles.dart';
 
 class AddressesPage extends StatelessWidget {
-  @override
+  const AddressesPage({super.key});
+
+ @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Direcciones Page'),
-    );
+    return const ScanTiles(tipo: 'http');
   }
 }
