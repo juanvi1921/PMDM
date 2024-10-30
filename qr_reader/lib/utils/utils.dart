@@ -10,9 +10,11 @@ Future<void> launchURL(BuildContext context, ScanModel scan) async {
       // Intenta lanzar la URL
       await launchUrlString(url, mode: LaunchMode.externalApplication);
     } else if (scan.tipo == 'geo') {
-      // Si el tipo es geo, navega a la página del mapa
-      Navigator.pushNamed(context, 'map', arguments: scan);
-    } else {
+  // Si el tipo es geo, navega a la página del mapa después de un pequeño retraso
+  Future.delayed(Duration(milliseconds: 300), () {
+    Navigator.pushNamed(context, 'map', arguments: scan);
+  });
+} else {
       throw Exception('Tipo de scan no reconocido');
     }
   } catch (e) {

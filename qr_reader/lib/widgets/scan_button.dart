@@ -19,7 +19,7 @@ class ScanButton extends StatelessWidget {
         );
       },
       elevation: 0,
-      child: const Icon(Icons.filter_center_focus, color: Colors.white,),
+      child: const Icon(Icons.filter_center_focus, color: Colors.white),
     );
   }
 }
@@ -29,10 +29,13 @@ class QRScanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MobileScannerController controller = MobileScannerController();
+
     return Scaffold(
       appBar: AppBar(title: const Text("Escanear código QR")),
       body: MobileScanner(
-        onDetect: (capture) {
+        controller: controller,
+        onDetect: (capture) async {
           final List<Barcode> barcodes = capture.barcodes;
           for (final barcode in barcodes) {
             final String? code = barcode.rawValue;
@@ -42,14 +45,16 @@ class QRScanScreen extends StatelessWidget {
               // Crear un ScanModel para pasar a la función launchURL
               final scan = ScanModel(valor: code);
 
-              //Guardar el escaneo
+              // Guardar el escaneo
               final scanListProvider = Provider.of<ScanListProvider>(context, listen: false);
               scanListProvider.newScan(scan.valor);
-              
-              launchURL(context, scan); // Llama a launchURL en vez de _launchURL
-              
-              // Cierra el escáner después de un escaneo exitoso
-              Navigator.pop(context); // Regresa a la pantalla anterior
+
+              // Llama a launchURL y espera que termine
+              await launchURL(context, scan);
+
+              // Detén el escáner y vuelve a la pantalla anterior
+              await controller.stop();
+              Navigator.pop(context);
               break; // Sal del bucle después de escanear el primer código
             }
           }
