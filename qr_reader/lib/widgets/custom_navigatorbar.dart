@@ -19,7 +19,8 @@ class CustomNavigatorbar extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
           BottomNavigationBarItem(icon: Icon(Icons.compass_calibration), label: 'Direcciones'),
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Tweets'),
-          BottomNavigationBarItem(icon: Icon(Icons.camera_alt_outlined), label: 'Instagram')
+          BottomNavigationBarItem(icon: Icon(Icons.camera_alt_outlined), label: 'Instagram'),
+          BottomNavigationBarItem(icon: Icon(Icons.telegram_outlined), label: 'Telegram')
         ]);
   }
 }

@@ -5,6 +5,7 @@ import 'package:qr_reader/providers/ui_provider.dart';
 import 'package:qr_reader/screens/addresses_page.dart';
 import 'package:qr_reader/screens/instagram_post_page.dart';
 import 'package:qr_reader/screens/maps_page.dart';
+import 'package:qr_reader/screens/telegram_message_screen.dart';
 import 'package:qr_reader/screens/tweets_page.dart';
 import 'package:qr_reader/widgets/custom_navigatorbar.dart';
 import 'package:qr_reader/widgets/scan_button.dart';
@@ -70,6 +71,9 @@ class _HomePageBody extends StatelessWidget {
       case 3:
         scanListProvider.loadScanByType('instagram');
         return InstagramPostsPage();
+      case 4:
+        scanListProvider.loadScanByType('telegram');
+        return TelegramMessageScreen();
       default:
         return MapsPage();
     }
