@@ -7,6 +7,8 @@ class ScanTiles extends StatelessWidget {
   final String tipo;
   const ScanTiles({super.key, required this.tipo});
 
+
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ScanListProvider>(
@@ -32,7 +34,7 @@ class ScanTiles extends StatelessWidget {
               );
             },
             child: ListTile(
-              leading: Icon(this.tipo == 'http' ? Icons.home_outlined : Icons.map_outlined, color: Theme.of(context).primaryColor),
+              leading: _getIconWidget(scans[i].tipo),
               title: Text(scans[i].valor),
               subtitle: Text(scans[i].id.toString()),
               trailing: const Icon(Icons.keyboard_arrow_right, color: Colors.grey),
@@ -43,4 +45,28 @@ class ScanTiles extends StatelessWidget {
       },
     );
   }
+
+ // Función para determinar el widget Icon
+  Widget _getIconWidget(String? tipo) {
+    // Verifica si el tipo es nulo antes de usarlo
+    if (tipo == null) {
+      return const Icon(Icons.help_outline); // Icono por defecto si el tipo es nulo
+    }
+
+    // Verifica el tipo
+    if (tipo == 'http') {
+      return const Icon(Icons.home_outlined); // Icono para 'http'
+    } else if (tipo == 'geo') {
+      return const Icon(Icons.map_outlined); // Icono para 'map'
+    } else if (tipo == 'tweets') {
+      return const Icon(Icons.chat); // Icono para 'tweets'
+    } else if (tipo == 'instagram') {
+      return const Icon(Icons.camera_alt_outlined); // Icono para 'instagram'
+    }
+    
+    // Icono por defecto si no coincide con ninguno
+    return const Icon(Icons.help_outline);
+  }
 }
+
+

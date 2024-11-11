@@ -11,27 +11,57 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   Completer<GoogleMapController> _controller = Completer();
+  MapType mapType = MapType.normal;
 
   @override
   Widget build(BuildContext context) {
     final ScanModel scan = ModalRoute.of(context)!.settings.arguments as ScanModel;
-    const CameraPosition initialPoint = CameraPosition(
-      target: LatLng(38.5055343, -0.24057421725),
+    Set<Marker> markers = new Set<Marker>();
+      markers.add(new Marker(
+        markerId: const MarkerId('geo-location'), position: scan.getLatLng()));
+    CameraPosition initialPoint = CameraPosition(
+      target: scan.getLatLng(),
       zoom: 17,
     );
     return Scaffold(
-      appBar: AppBar(title: Text('Mapa', style: TextStyle(color: Colors.white),), 
-      elevation: 0,
-      backgroundColor: Colors.deepPurple,
-      iconTheme: const IconThemeData(color: Colors.white),),
-  
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () async {
+              final GoogleMapController controller = await _controller.future;
+              controller.animateCamera(CameraUpdate.newCameraPosition(initialPoint));
+            }, 
+            icon: Icon(Icons.location_on, color: Colors.white,))
+        ],
+        title: const Text(
+          'Mapa',
+          style: TextStyle(color: Colors.white),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.deepPurple,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
       body: GoogleMap(
-        mapType: MapType.normal,
+        mapType: mapType,
         initialCameraPosition: initialPoint,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
+        markers: markers,
       ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.layers, color: Colors.white,),
+        onPressed: () {
+          if (mapType == MapType.normal) {
+            mapType = MapType.satellite;
+          } else {
+            mapType = MapType.normal;
+          }
+
+          setState(() {});
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
     );
   }
 }
