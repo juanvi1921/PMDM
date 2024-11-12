@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:prefusuarios/screens/home_screen.dart';
 import 'package:prefusuarios/screens/settings_screen.dart';
+import 'package:prefusuarios/shared_prefs/user_preferences.dart';
 
-void main() => runApp(const Preferencias());
+void main() async {
+ WidgetsFlutterBinding.ensureInitialized();
+ final prefs = new UserPreferences();
+ await prefs.initPrefs();
+ runApp(const Preferencias());
+}
 
 class Preferencias extends StatelessWidget {
   const Preferencias({super.key});
@@ -13,7 +19,7 @@ class Preferencias extends StatelessWidget {
       title: 'Preferencias',
       debugShowCheckedModeBanner: false,
       
-      initialRoute: HomeScreen.routeName,
+      initialRoute: UserPreferences().lastPage,
       routes:  {
         HomeScreen.routeName: (BuildContext context) => const HomeScreen(),
         SettingsScreen.routeName: (BuildContext context) => const SettingsScreen(),
