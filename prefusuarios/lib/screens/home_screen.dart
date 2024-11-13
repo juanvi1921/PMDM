@@ -20,7 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Listener para actualizar el color de fondo cuando cambie colorSecundario
     prefs.colorSecundarioNotifier.addListener(() {
-      setState(() {}); // Esto hace que se reconstruya el AppBar con el nuevo color
+      // Verifica si el widget sigue montado antes de llamar a setState
+      if (mounted) {
+        setState(() {}); // Esto hace que se reconstruya el AppBar con el nuevo color
+      }
     });
   }
 

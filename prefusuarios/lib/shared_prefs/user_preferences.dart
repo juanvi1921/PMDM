@@ -41,7 +41,7 @@ class UserPreferences {
     generoNotifier.value = value;
   }
 
-//GET y SET del ColorSecundario
+  //GET y SET del ColorSecundario
   bool get colorSecundario {
     // Si no existe el colorSecundario, devolverá un false
     return _prefs.getBool('colorSecundario') ?? false;
