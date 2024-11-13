@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:prefusuarios/screens/home_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class UserPreferences {
-  static final UserPreferences _instance = new UserPreferences._internal();
+  static final UserPreferences _instance = UserPreferences._internal();
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   factory UserPreferences() {
     return _instance;
@@ -11,55 +11,51 @@ class UserPreferences {
 
   UserPreferences._internal();
 
-  late SharedPreferences _prefs;
-
-  Future<void> initPrefs() async {
-    this._prefs = await SharedPreferences.getInstance();
-  }
-
-  // Notifiers
+  // ValueNotifiers
   ValueNotifier<int> generoNotifier = ValueNotifier<int>(1);
   ValueNotifier<bool> colorSecundarioNotifier = ValueNotifier<bool>(false);
   ValueNotifier<String> nombreNotifier = ValueNotifier<String>('');
+  ValueNotifier<String> lastPageNotifier = ValueNotifier<String>('/');  // Aquí agregamos lastPageNotifier
 
-  // Getter y setter para la última página
-  String get lastPage {
-    return _prefs.getString('lastPage') ?? HomeScreen.routeName; // Por defecto, será la pantalla de inicio
+  // Método de inicialización
+  Future<void> initPrefs() async {
+    // Cargar los datos desde el almacenamiento seguro
+    String? genero = await _secureStorage.read(key: 'genero');
+    String? colorSecundario = await _secureStorage.read(key: 'colorSecundario');
+    String? nombre = await _secureStorage.read(key: 'nombre');
+    String? lastPage = await _secureStorage.read(key: 'lastPage');  // Cargar la última página
+
+    generoNotifier.value = int.tryParse(genero ?? '1') ?? 1;
+    colorSecundarioNotifier.value = (colorSecundario ?? 'false') == 'true';
+    nombreNotifier.value = nombre ?? '';
+    lastPageNotifier.value = lastPage ?? '/';  // Establecemos la última página o la ruta raíz '/'
   }
 
-  set lastPage(String value) {
-    _prefs.setString('lastPage', value);
-  }
-
-  //GET y SET del genero
-  int get genero {
-    return _prefs.getInt('genero') ?? 1;
-  }
-
-  set genero(int value) {
-    _prefs.setInt('genero', value);
+  // Getter y Setter para género
+  int get genero => generoNotifier.value;
+  set genero(int value)  {
+    _secureStorage.write(key: 'genero', value: value.toString());
     generoNotifier.value = value;
   }
 
-  //GET y SET del ColorSecundario
-  bool get colorSecundario {
-    // Si no existe el colorSecundario, devolverá un false
-    return _prefs.getBool('colorSecundario') ?? false;
-  }
-
-  set colorSecundario(bool value) {
-    _prefs.setBool('colorSecundario', value);
+  // Getter y Setter para color secundario
+  bool get colorSecundario => colorSecundarioNotifier.value;
+  set colorSecundario(bool value)  {
+    _secureStorage.write(key: 'colorSecundario', value: value.toString());
     colorSecundarioNotifier.value = value;
   }
 
-  //GET y SET del Nombre de usuario
-  String get nombre {
-    // Si no existe el nombreUsuario, devolverá una cadena vacía
-    return _prefs.getString('nombre') ?? '';
+  // Getter y Setter para nombre
+  String get nombre => nombreNotifier.value;
+  set nombre(String value)  {
+    _secureStorage.write(key: 'nombre', value: value);
+    nombreNotifier.value = value;
   }
 
-  set nombre(String value) {
-    _prefs.setString('nombre', value);
-    nombreNotifier.value = value;
+  // Getter y Setter para la última página
+  String get lastPage => lastPageNotifier.value;
+  set lastPage(String value)  {
+    _secureStorage.write(key: 'lastPage', value: value);
+    lastPageNotifier.value = value;
   }
 }

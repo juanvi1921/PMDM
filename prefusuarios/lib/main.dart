@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:prefusuarios/flutter_secure_storage/secure_storage.dart'; // Asegúrate de que la ruta sea correcta
 import 'package:prefusuarios/screens/home_screen.dart';
 import 'package:prefusuarios/screens/settings_screen.dart';
 import 'package:prefusuarios/shared_prefs/user_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   final prefs = UserPreferences();
   await prefs.initPrefs();
+
+  final secureStorage = SecureStorage();
+  await secureStorage.migrateData(); // Llama a migrateData a través de la instancia de SecureStorage
+
   runApp(const Preferencias());
 }
 
@@ -38,8 +44,8 @@ class Preferencias extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.pink,
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Colors.pink
-        )
+          backgroundColor: Colors.pink,
+        ),
       ),
     );
   }

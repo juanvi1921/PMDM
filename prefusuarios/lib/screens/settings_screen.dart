@@ -10,18 +10,14 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final prefs = UserPreferences();
-  bool _colorSecundario = false;
-  late int _genero;
+  final prefs = UserPreferences(); // Instancia de UserPreferences
   late TextEditingController _textController;
 
   @override
   void initState() {
     super.initState();
-    prefs.initPrefs();
-    _genero = prefs.genero;
-    _colorSecundario = prefs.colorSecundario;
-    _textController = TextEditingController(text: prefs.nombre);
+    prefs.initPrefs(); // Inicializa las preferencias desde el almacenamiento seguro
+    _textController = TextEditingController(text: prefs.nombre); // Setea el nombre en el controlador
   }
 
   @override
@@ -32,10 +28,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // Método para cambiar el valor de género en las preferencias
   void _setSelectedRadio(int value) {
-    setState(() {
-      _genero = value;
-      prefs.genero = value; // Guardar el valor en las preferencias
-    });
+    prefs.genero = value; // Establece el valor de genero usando el ValueNotifier
   }
 
   @override
@@ -43,7 +36,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ajustes'),
-        backgroundColor: _colorSecundario ? Colors.teal : Colors.pink,
+        backgroundColor: prefs.colorSecundario ? Colors.teal : Colors.pink,
         foregroundColor: Colors.white,
       ),
       body: ListView(
@@ -58,12 +51,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Divider(),
           // Switch para el color secundario
           SwitchListTile(
-            value: _colorSecundario,
+            value: prefs.colorSecundario, // Usamos el valor del notifier
             title: const Text('Color secundario'),
             onChanged: (value) {
               setState(() {
-                _colorSecundario = value;
-                prefs.colorSecundario = value; // Guardar el valor en preferencias
+                prefs.colorSecundario = value; // Guardamos el valor en secure storage
               });
             },
           ),
@@ -71,20 +63,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           RadioListTile(
             value: 1,
             title: const Text('Masculino'),
-            groupValue: _genero,
+            groupValue: prefs.genero,
             onChanged: (value) {
               setState(() {
-                _setSelectedRadio(value as int);
+                _setSelectedRadio(value as int); // Cambiar género
               });
             },
           ),
           RadioListTile(
             value: 2,
             title: const Text('Femenino'),
-            groupValue: _genero,
+            groupValue: prefs.genero,
             onChanged: (value) {
               setState(() {
-                _setSelectedRadio(value as int);
+                _setSelectedRadio(value as int); // Cambiar género
               });
             },
           ),
@@ -99,7 +91,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 helperText: 'Nombre de la persona utilizando el teléfono',
               ),
               onChanged: (value) {
-                prefs.nombre = value; // Guardar el valor en preferencias
+                prefs.nombre = value; // Guardar el valor en secure storage
               },
             ),
           ),
