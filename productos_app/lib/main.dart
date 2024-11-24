@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import 'package:flutter/material.dart';
 import 'package:productos_app/screens/login_screen.dart';
 import 'package:productos_app/screens/home_screen.dart';
@@ -29,3 +30,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+=======
+
+>>>>>>> 8fa2d55f168327d5ac4d5ed56432f920762ea006

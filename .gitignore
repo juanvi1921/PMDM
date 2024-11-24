@@ -2,6 +2,10 @@ productos_app/.gitignore
 productos_app/.metadata
 productos_app/analysis_options.yaml
 productos_app/pubspec.lock
+<<<<<<< HEAD
+=======
+productos_app/pubspec.yaml
+>>>>>>> 8fa2d55f168327d5ac4d5ed56432f920762ea006
 productos_app/README.md
 productos_app/android/.gitignore
 productos_app/android/build.gradle
