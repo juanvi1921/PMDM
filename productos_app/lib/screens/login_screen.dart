@@ -1,24 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:productos_app/widgets/auth_background.dart';
+import 'package:productos_app/screens/register_screen.dart';
+import 'package:productos_app/widgets/widgets.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: AuthBackground(
-          child: SingleChildScrollView(
-        child: Column(
-          children: const [
-            SizedBox(height: 250),
-            Text(
-              'LoginScreen',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 250),
+              CardContainer(
+                child: LoginForm(), // Uso del widget LoginForm
+              ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  // Navegar a la pantalla de registro cuando se toque el texto
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegisterScreen()),
+                  );
+                },
+                child: const Text(
+                  '¿No tienes una cuenta? Crea una aquí.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 }

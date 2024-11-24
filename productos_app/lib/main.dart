@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:productos_app/screens/home_screen.dart';
 import 'package:productos_app/screens/login_screen.dart';
+import 'package:productos_app/screens/home_screen.dart';
+import 'package:productos_app/providers/login_form_provider.dart'; // Importa el LoginFormProvider
+import 'package:provider/provider.dart'; // Importa el paquete provider
 
 void main() => runApp(const MyApp());
 
@@ -9,24 +11,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Productos App',
-      initialRoute: 'login',
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.grey[300],
-      ),
-      routes: {
-        'login': (context) => const LoginScreen(),
-        'home': (context) => const HomeScreen(),
-      },
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Material App Bar'),
+    return ChangeNotifierProvider(
+      create: (_) => LoginFormProvider(), // Proveemos LoginFormProvider
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Productos App',
+        initialRoute: 'login',
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.grey[300],
         ),
-        body: const Center(
-          child: Text('Hello World'),
-        ),
+        routes: {
+          'login': (context) => const LoginScreen(),
+          'home': (context) => const HomeScreen(),
+        },
+        // Eliminamos home, porque ya estamos usando rutas
       ),
     );
   }

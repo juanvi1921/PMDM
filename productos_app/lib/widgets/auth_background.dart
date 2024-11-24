@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
 class AuthBackground extends StatelessWidget {
-  const AuthBackground({super.key, required SingleChildScrollView child});
+  final Widget child;
+
+  const AuthBackground({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      child: const Stack(
+      child: Stack(
         children: [
-          PurpleBox(),
+          const PurpleBox(),
+          const _HeaderIcon(),
+          child,
         ],
       ),
     );
@@ -27,7 +31,7 @@ class PurpleBox extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: size.height * 0.4, // 40% of screen height
-      decoration: _purpleBackgorund(),
+      decoration: _purpleBackground(),
       child: Stack(
         children: [
           Positioned(
@@ -45,22 +49,12 @@ class PurpleBox extends StatelessWidget {
             left: -10,
             child: _Circle(),
           ),
-          const Positioned(
-            top: 40,
-            left: 0,
-            right: 0,
-            child: Icon(
-              Icons.person_pin,
-              color: Colors.white,
-              size: 100,
-            ),
-          ),
         ],
       ),
     );
   }
 
-  BoxDecoration _purpleBackgorund() {
+  BoxDecoration _purpleBackground() {
     return const BoxDecoration(
       gradient: LinearGradient(
         colors: [
@@ -83,6 +77,25 @@ class _Circle extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Color.fromRGBO(255, 255, 255, 0.05),
         shape: BoxShape.circle,
+      ),
+    );
+  }
+}
+
+class _HeaderIcon extends StatelessWidget {
+  const _HeaderIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(top: 30),
+        child: const Icon(
+          Icons.person_pin,
+          color: Colors.white,
+          size: 100,
+        ),
       ),
     );
   }
