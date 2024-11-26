@@ -6,17 +6,23 @@ class ProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              ProductImage(),
-            ],
-          ),
-          
-        ],
+    return Scaffold(
+      body: const SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                ProductImage(),
+              ],
+            ),
+            ProductForm(),
+          ],
+        ),
       ),
+      floatingActionButton:
+          FloatingActionButton(onPressed: () {}, child: const Icon(Icons.save_outlined, color: Colors.white, size: 35,),
+          //shape: const CircleBorder() Esto es si quisiera el boton de guardar redondo.
+        ),
     );
   }
 }

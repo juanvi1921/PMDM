@@ -8,3 +8,4 @@ export 'package:productos_app/widgets/available_tag.dart';
 export 'package:productos_app/widgets/background_image.dart';
 export 'package:productos_app/widgets/price_tag.dart';
 export 'package:productos_app/widgets/product_details.dart';
+export 'package:productos_app/widgets/product_form.dart';

@@ -20,7 +20,9 @@ class HomeScreen extends StatelessWidget {
             );
           }),
       floatingActionButton:
-          FloatingActionButton(onPressed: () {}, child: const Icon(Icons.add, color: Colors.white,)),
+          FloatingActionButton(onPressed: () {}, child: const Icon(Icons.add, color: Colors.white, size: 35,),
+          //shape: const CircleBorder() Esto es si quisiera el boton de + redondo.
+        ),
     );
   }
 }
