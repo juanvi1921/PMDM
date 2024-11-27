@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:productos_app/models/product.dart';
 import 'package:productos_app/screens/loading_screen.dart';
 import 'package:productos_app/services/services.dart';
 import 'package:productos_app/widgets/product_card.dart';
@@ -24,13 +25,27 @@ class HomeScreen extends StatelessWidget {
           itemCount: productsService.products.length,
           itemBuilder: (context, index) {
             final product = productsService.products[index];
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ProductCard(product: product),
+            return GestureDetector(
+              onTap: () {
+                  final product = productsService.products[index];
+                  productsService.selectedProduct = product.copy(); 
+                  Navigator.pushNamed(context, 'product');  
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: ProductCard(product: product),
+              ),
             );
           }),
       floatingActionButton:
-          FloatingActionButton(onPressed: () {}, child: const Icon(Icons.add, color: Colors.white, size: 35,),
+          FloatingActionButton(onPressed: () {
+            productsService.selectedProduct = new Product(
+              available: false,
+              name: "",
+              price: 0,
+            );
+            Navigator.pushNamed(context, 'product');
+          }, child: const Icon(Icons.add, color: Colors.white, size: 35,),
           //shape: const CircleBorder() Esto es si quisiera el boton de + redondo.
         ),
     );

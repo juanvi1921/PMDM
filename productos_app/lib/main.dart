@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:productos_app/providers/login_form_provider.dart';
 import 'package:productos_app/screens/home_screen.dart';
 import 'package:productos_app/screens/login_screen.dart';
+import 'package:productos_app/screens/product_screen.dart';
 import 'package:productos_app/services/products_service.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         routes: {
           'login': (context) => const LoginScreen(),
           'home': (context) => const HomeScreen(),
+          'product': (context) => const ProductScreen(),
         },
       ),
     );

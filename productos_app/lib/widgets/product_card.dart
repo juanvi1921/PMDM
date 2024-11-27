@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:productos_app/models/product.dart';
-import 'package:productos_app/screens/product_screen.dart';
 import 'package:productos_app/widgets/widgets.dart';
 
 class ProductCard extends StatelessWidget {
@@ -11,8 +10,12 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const ProductScreen()));
+        // Enviar el producto como argumento al navegar
+        Navigator.pushNamed(
+          context,
+          'product',
+          arguments: product,  // Pasamos el producto seleccionado
+        );
       },
       child: Container(
         width: double.infinity,

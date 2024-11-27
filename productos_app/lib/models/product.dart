@@ -1,44 +1,51 @@
 import 'dart:convert';
 
 class Product {
-    String? id;
-    bool available;
-    String name;
-    String? picture;
-    double price;
+  String? id;
+  bool available;
+  String name;
+  String? picture;
+  double price;
 
-    Product({
-        this.id,
-        required this.available,
-        required this.name,
-        this.picture,
-        required this.price,
-    });
+  // Constructor
+  Product({
+    this.id,
+    required this.available,
+    required this.name,
+    this.picture,
+    required this.price,
+  });
 
-    factory Product.fromJson(String str) => Product.fromMap(json.decode(str));
+  // Método toJson para convertir a un String JSON
+  String toJson() => json.encode(toMap());
 
-    String toJson() => json.encode(toMap());
+  // Factory constructor para crear un Product desde un JSON
+  // Cambié el método para que no solo reciba un String, sino también un 'id' directamente
+  factory Product.fromJson(String str, String id) => Product.fromMap(json.decode(str), id);
 
-    factory Product.fromMap(Map<String, dynamic> json) => Product(
-        id: '',
-        available: json["available"],
-        name: json["name"],
-        picture: json["picture"],
-        price: json["price"]?.toDouble(),
-    );
+  // Factory constructor para crear un Product desde un mapa
+  factory Product.fromMap(Map<String, dynamic> json, String id) => Product(
+    id: id, // Se pasa el 'id' desde el contexto de Firebase
+    available: json["available"],
+    name: json["name"],
+    picture: json["picture"],
+    price: json["price"]?.toDouble(), // Asegurándonos que el precio sea double
+  );
 
-    Map<String, dynamic> toMap() => {
-        "available": available,
-        "name": name,
-        "picture": picture,
-        "price": price,
-    };
+  // Convertir el Product a un mapa
+  Map<String, dynamic> toMap() => {
+    "available": available,
+    "name": name,
+    "picture": picture,
+    "price": price,
+  };
 
-    Product copy() => Product (
-      available: this.available,
-      name: this.name,
-      picture: this.picture,
-      price: this.price,
-      id: this.id,
-    );
+  // Método para crear una copia del producto
+  Product copy() => Product(
+    id: this.id, // Copiar el id también
+    available: this.available,
+    name: this.name,
+    picture: this.picture,
+    price: this.price, 
+  );
 }
