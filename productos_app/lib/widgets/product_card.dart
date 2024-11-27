@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:productos_app/models/product.dart';
 import 'package:productos_app/screens/product_screen.dart';
 import 'package:productos_app/widgets/widgets.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({super.key});
+  final Product product;
+  const ProductCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +19,14 @@ class ProductCard extends StatelessWidget {
         height: 400,
         margin: const EdgeInsets.only(top: 30, bottom: 50),
         decoration: _cardBorders(),
-        child: const Stack(
+        child: Stack(
           alignment: Alignment.bottomLeft,
           children: [
-            BackgroundImage(),
-            ProductDetails(),
-            Positioned(top: 0, right: 0, child: PriceTag()),
-            Positioned(top: 0, left: 0, child: AvailableTag())
+            BackgroundImage(product.picture),
+            ProductDetails(title: product.name, subtitle: product.id.toString(),),
+            Positioned(top: 0, right: 0, child: PriceTag(price: product.price,)),
+            if (!product.available)
+              const Positioned(top: 0, left: 0, child: AvailableTag()) //La clase se debe llamar NotAvailableTag
           ],
         ),
       ),

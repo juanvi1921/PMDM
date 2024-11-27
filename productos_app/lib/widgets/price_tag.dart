@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PriceTag extends StatelessWidget {
-  const PriceTag({super.key});
+  final double price;
+  const PriceTag({super.key, required this.price});
 
   @override
   Widget build(BuildContext context) {
@@ -13,13 +14,13 @@ class PriceTag extends StatelessWidget {
           color: Colors.indigo,
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(25), bottomLeft: Radius.circular(25))),
-      child: const FittedBox(
+      child: FittedBox(
         fit: BoxFit.contain,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
-            '103,99€',
-            style: TextStyle(
+            '${price.toStringAsFixed(2)}€',
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 20,
             ),
