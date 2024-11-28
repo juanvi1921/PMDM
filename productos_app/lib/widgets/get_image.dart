@@ -14,7 +14,7 @@ Widget getImage(String? picture) {
     return FadeInImage(
       placeholder: const AssetImage('assets/jar-loading.gif'), 
       image: NetworkImage(picture),
-      fit: BoxFit.cover,
+      fit: BoxFit.contain,
     );
   }
 

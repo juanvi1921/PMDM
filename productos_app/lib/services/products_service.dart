@@ -56,23 +56,33 @@ class ProductsService extends ChangeNotifier {
     isSaving = true;
     notifyListeners();
 
-    if (product.id == null) {
-      //Es necesario crear
-      await createProduct(product);
-    } else {
-      //Actualizar
-      await updateProduct(product);
+    // Subir imagen si existe un archivo nuevo
+    if (newPictureFile != null) {
+        final imageUrl = await uploadImage(newPictureFile!.path);
+        if (imageUrl != null) {
+            product.picture = imageUrl;
+        }
     }
-  }
 
-  void updateSelectedProductImage(String path) {
+    if (product.id == null) {
+        await createProduct(product);
+    } else {
+        await updateProduct(product);
+    }
+
+    isSaving = false;
+    notifyListeners();
+}
+
+
+  void updateSelectedProductImage(String path) { 
     selectedProduct.picture = path;
     newPictureFile = File.fromUri(Uri(path: path));
 
     notifyListeners();
   }
 
-  Future<String?> uploadImage() async {
+  Future<String?> uploadImage(String path) async {
     if(newPictureFile == null) return null;
 
     isSaving = true;
@@ -92,11 +102,16 @@ class ProductsService extends ChangeNotifier {
     if (resp.statusCode != 200 && resp.statusCode != 201) {
       print('Ha habido un error');
       print(resp.body);
+      isSaving = false; // Asegurarse de que el indicador desaparezca en caso de error
+      notifyListeners();
       return null;
     }
 
     newPictureFile = null;
     final decodedData = json.decode(resp.body);
+
+    isSaving = false; // Actualizar el estado después de subir la imagen
+    notifyListeners();
     return decodedData['secure_url'];
   }
 

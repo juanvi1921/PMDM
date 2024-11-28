@@ -62,11 +62,11 @@ class _ProductScreenBody extends StatelessWidget {
           await productsService.saveOrCreateProduct(productForm.product);
           Navigator.pop(context);
         },
-        child: const Icon(
-          Icons.save_outlined,
+        child: productsService.isSaving ?
+        const CircularProgressIndicator(
           color: Colors.white,
-          size: 35,
-        ),
+        ) :
+        const Icon(Icons.save_outlined, color: Colors.white,),
       ),
     );
   }

@@ -14,46 +14,90 @@ class ProductImage extends StatefulWidget {
 }
 
 class _ProductImageState extends State<ProductImage> {
-  String? _imagePath; // Variable para almacenar la ruta de la imagen seleccionada
+  String?
+      _imagePath; // Variable para almacenar la ruta de la imagen seleccionada
 
+  // Método para procesar la imagen
   Future<void> _processImage() async {
     final _picker = ImagePicker();
-    final XFile? pickedFile = await _picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 100,
-    );
 
-    if (pickedFile == null) {
-      print('No seleccionó nada');
-    } else {
-      print('Tenemos imagen ${pickedFile.path}');
-      // Actualizar el estado con la nueva ruta de la imagen
+    try {
+      // Seleccionar una imagen desde la cámara
+      final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 100,
+      );
+
+      if (pickedFile == null) {
+        // Si el usuario no toma una foto
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No se seleccionó ninguna imagen')),
+        );
+        return;
+      }
+
+      // Actualizar la variable local de la imagen
       setState(() {
         _imagePath = pickedFile.path;
       });
 
-      // Validar formulario y subir imagen
-      await _uploadAndValidateImage();
+      // Actualizar la imagen seleccionada en el servicio
+      final productsService =
+          Provider.of<ProductsService>(context, listen: false);
+      productsService.updateSelectedProductImage(pickedFile.path);
+
+      // Validar y subir la imagen
+      await _uploadAndValidateImage(pickedFile);
+    } catch (e) {
+      print('Error al procesar la imagen: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al tomar la foto')),
+      );
     }
   }
 
-  Future<void> _uploadAndValidateImage() async {
-    // Acceder al ProductsService y ProductFormProvider
-    final productsService = Provider.of<ProductsService>(context, listen: false);
-    final productForm = Provider.of<ProductFormProvider>(context, listen: false);
+  // Método para subir y validar la imagen
+  Future<void> _uploadAndValidateImage(XFile pickedFile) async {
+    // Acceder al servicio y al formulario
+    final productsService =
+        Provider.of<ProductsService>(context, listen: false);
+    final productForm =
+        Provider.of<ProductFormProvider>(context, listen: false);
 
-    if (!productForm.isValidForm()) {
-      print('Formulario inválido, no se puede subir la imagen.');
-      return;
-    }
+    try {
+      // Validar que el formulario es válido
+      if (!productForm.isValidForm()) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Formulario inválido. Verifica los campos.')),
+        );
+        return;
+      }
 
-    // Subir la imagen
-    final String? imageUrl = await productsService.uploadImage();
-    print('Image uploaded: $imageUrl');
+      // Subir la imagen al servidor
+      final String? imageUrl =
+          await productsService.uploadImage(pickedFile.path);
 
-    // Actualizar la imagen en el formulario si se subió correctamente
-    if (imageUrl != null) {
-      productForm.product.picture = imageUrl;
+      if (imageUrl == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Error al subir la imagen. Intenta nuevamente.')),
+        );
+        return;
+      }
+
+      // Actualizar la URL de la imagen en el formulario
+      setState(() {
+        productForm.product.picture = imageUrl;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Imagen actualizada con éxito')),
+      );
+    } catch (e) {
+      print('Error al subir o validar la imagen: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Ocurrió un error al subir la imagen')),
+      );
     }
   }
 
@@ -80,6 +124,7 @@ class _ProductImageState extends State<ProductImage> {
         ),
         child: Stack(
           children: [
+            // Mostrar la imagen actual o una URL inicial
             Positioned.fill(
               child: Opacity(
                 opacity: 0.9,
@@ -88,10 +133,11 @@ class _ProductImageState extends State<ProductImage> {
                     topLeft: Radius.circular(45),
                     topRight: Radius.circular(45),
                   ),
-                  child: getImage(_imagePath ?? widget.url), // Si no hay imagen, usa la url inicial
+                  child: getImage(_imagePath ?? widget.url),
                 ),
               ),
             ),
+            // Botón para regresar
             Positioned(
               top: 35,
               left: 15,
@@ -104,12 +150,13 @@ class _ProductImageState extends State<ProductImage> {
                 color: Colors.white,
               ),
             ),
+            // Botón de la cámara
             Positioned(
               top: 35,
               right: 15,
               child: IconButton(
                 onPressed: () async {
-                  await _processImage(); // Procesar la imagen cuando se toma una foto
+                  await _processImage(); // Procesar la imagen al presionar el botón
                 },
                 icon: const Icon(Icons.camera_alt_outlined),
                 iconSize: 40,
