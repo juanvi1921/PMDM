@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:productos_app/widgets/get_image.dart';
+import '../services/services.dart';
+import '../providers/product_form_provider.dart';
 
 class ProductImage extends StatefulWidget {
   final String? url;
@@ -28,6 +31,29 @@ class _ProductImageState extends State<ProductImage> {
       setState(() {
         _imagePath = pickedFile.path;
       });
+
+      // Validar formulario y subir imagen
+      await _uploadAndValidateImage();
+    }
+  }
+
+  Future<void> _uploadAndValidateImage() async {
+    // Acceder al ProductsService y ProductFormProvider
+    final productsService = Provider.of<ProductsService>(context, listen: false);
+    final productForm = Provider.of<ProductFormProvider>(context, listen: false);
+
+    if (!productForm.isValidForm()) {
+      print('Formulario inválido, no se puede subir la imagen.');
+      return;
+    }
+
+    // Subir la imagen
+    final String? imageUrl = await productsService.uploadImage();
+    print('Image uploaded: $imageUrl');
+
+    // Actualizar la imagen en el formulario si se subió correctamente
+    if (imageUrl != null) {
+      productForm.product.picture = imageUrl;
     }
   }
 
