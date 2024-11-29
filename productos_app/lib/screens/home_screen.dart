@@ -43,6 +43,7 @@ class HomeScreen extends StatelessWidget {
               available: false,
               name: "",
               price: 0,
+              fechaAlta: DateTime.now(),
             );
             Navigator.pushNamed(context, 'product');
           }, child: const Icon(Icons.add, color: Colors.white, size: 35,),

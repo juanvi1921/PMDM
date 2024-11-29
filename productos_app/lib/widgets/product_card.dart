@@ -14,7 +14,7 @@ class ProductCard extends StatelessWidget {
         Navigator.pushNamed(
           context,
           'product',
-          arguments: product,  // Pasamos el producto seleccionado
+          arguments: product, // Pasamos el producto seleccionado
         );
       },
       child: Container(
@@ -26,26 +26,80 @@ class ProductCard extends StatelessWidget {
           alignment: Alignment.bottomLeft,
           children: [
             BackgroundImage(product.picture),
-            ProductDetails(title: product.name, subtitle: product.id.toString(),),
-            Positioned(top: 0, right: 0, child: PriceTag(price: product.price,)),
+            ProductDetails(
+              title: product.name,
+              subtitle: product.id.toString(),
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: PriceTag(price: product.price),
+            ),
             if (!product.available)
-              const Positioned(top: 0, left: 0, child: AvailableTag()) //La clase se debe llamar NotAvailableTag
+              Positioned(
+                top: 0,
+                left: 0,
+                child: Container(
+                  width: 100,
+                  height: 70,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(25),
+                      bottomRight: Radius.circular(25),
+                    ),
+                  ),
+                  child: const FittedBox(
+                    fit: BoxFit.contain,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        'No disponible',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            Positioned(
+              bottom: 9,
+              right: 65,
+              child: Text(
+                _formatDate(product.fechaAlta),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'Sin fecha';
+    return '${date.day}/${date.month}/${date.year}';
+  }
+
   BoxDecoration _cardBorders() {
     return BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(25),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            offset: Offset(0, 7),
-            blurRadius: 10,
-          )
-        ]);
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(25),
+      boxShadow: const [
+        BoxShadow(
+          color: Colors.black12,
+          offset: Offset(0, 7),
+          blurRadius: 10,
+        ),
+      ],
+    );
   }
 }

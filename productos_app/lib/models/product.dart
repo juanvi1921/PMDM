@@ -6,6 +6,7 @@ class Product {
   String name;
   String? picture;
   double price;
+  DateTime? fechaAlta;
 
   // Constructor
   Product({
@@ -14,6 +15,7 @@ class Product {
     required this.name,
     this.picture,
     required this.price,
+    this.fechaAlta,
   });
 
   // Método toJson para convertir a un String JSON
@@ -29,7 +31,10 @@ class Product {
     available: json["available"],
     name: json["name"],
     picture: json["picture"],
-    price: json["price"]?.toDouble(), // Asegurándonos que el precio sea double
+    price: json["price"]?.toDouble(),
+    fechaAlta: json["fechaAlta"] != null
+            ? DateTime.parse(json["fechaAlta"])
+            : null,
   );
 
   // Convertir el Product a un mapa
@@ -38,6 +43,7 @@ class Product {
     "name": name,
     "picture": picture,
     "price": price,
+    "fechaAlta": fechaAlta?.toIso8601String(),
   };
 
   // Método para crear una copia del producto
@@ -46,6 +52,7 @@ class Product {
     available: this.available,
     name: this.name,
     picture: this.picture,
-    price: this.price, 
+    price: this.price,
+    fechaAlta: this.fechaAlta, 
   );
 }

@@ -14,22 +14,21 @@ class ProductImage extends StatefulWidget {
 }
 
 class _ProductImageState extends State<ProductImage> {
-  String?
-      _imagePath; // Variable para almacenar la ruta de la imagen seleccionada
+  String? _imagePath;
 
-  // Método para procesar la imagen
-  Future<void> _processImage() async {
+  // Método para procesar la imagen (desde cámara o galería)
+  Future<void> _processImage(ImageSource source) async {
     final _picker = ImagePicker();
 
     try {
-      // Seleccionar una imagen desde la cámara
+      // Seleccionar una imagen desde la fuente especificada
       final XFile? pickedFile = await _picker.pickImage(
-        source: ImageSource.camera,
+        source: source,
         imageQuality: 100,
       );
 
       if (pickedFile == null) {
-        // Si el usuario no toma una foto
+        // Si el usuario no selecciona una imagen
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('No se seleccionó ninguna imagen')),
         );
@@ -51,21 +50,18 @@ class _ProductImageState extends State<ProductImage> {
     } catch (e) {
       print('Error al procesar la imagen: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al tomar la foto')),
+        SnackBar(content: Text('Error al seleccionar la imagen')),
       );
     }
   }
 
-  // Método para subir y validar la imagen
   Future<void> _uploadAndValidateImage(XFile pickedFile) async {
-    // Acceder al servicio y al formulario
     final productsService =
         Provider.of<ProductsService>(context, listen: false);
     final productForm =
         Provider.of<ProductFormProvider>(context, listen: false);
 
     try {
-      // Validar que el formulario es válido
       if (!productForm.isValidForm()) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Formulario inválido. Verifica los campos.')),
@@ -73,7 +69,6 @@ class _ProductImageState extends State<ProductImage> {
         return;
       }
 
-      // Subir la imagen al servidor
       final String? imageUrl =
           await productsService.uploadImage(pickedFile.path);
 
@@ -85,7 +80,6 @@ class _ProductImageState extends State<ProductImage> {
         return;
       }
 
-      // Actualizar la URL de la imagen en el formulario
       setState(() {
         productForm.product.picture = imageUrl;
       });
@@ -124,7 +118,6 @@ class _ProductImageState extends State<ProductImage> {
         ),
         child: Stack(
           children: [
-            // Mostrar la imagen actual o una URL inicial
             Positioned.fill(
               child: Opacity(
                 opacity: 0.9,
@@ -137,7 +130,6 @@ class _ProductImageState extends State<ProductImage> {
                 ),
               ),
             ),
-            // Botón para regresar
             Positioned(
               top: 35,
               left: 15,
@@ -150,15 +142,26 @@ class _ProductImageState extends State<ProductImage> {
                 color: Colors.white,
               ),
             ),
-            // Botón de la cámara
+            Positioned(
+              top: 35,
+              right: 75, // Ajuste para dejar espacio al botón de galería
+              child: IconButton(
+                onPressed: () async {
+                  await _processImage(ImageSource.camera);
+                },
+                icon: const Icon(Icons.camera_alt_outlined),
+                iconSize: 40,
+                color: Colors.white,
+              ),
+            ),
             Positioned(
               top: 35,
               right: 15,
               child: IconButton(
                 onPressed: () async {
-                  await _processImage(); // Procesar la imagen al presionar el botón
+                  await _processImage(ImageSource.gallery);
                 },
-                icon: const Icon(Icons.camera_alt_outlined),
+                icon: const Icon(Icons.photo_library_outlined),
                 iconSize: 40,
                 color: Colors.white,
               ),

@@ -16,6 +16,7 @@ class ProductsService extends ChangeNotifier {
     price: 0.0,
     available: false,
     picture: null,
+    fechaAlta: null,
   );
   bool isLoading = true;
   bool isSaving = false;
@@ -43,13 +44,14 @@ class ProductsService extends ChangeNotifier {
     final decodeData = json.decode(resp.body);
 
     product.id = decodeData['name'];
+    product.fechaAlta = DateTime.now();
 
     this.products.add(product);
     notifyListeners();
 
     print(decodeData);
 
-    return '';
+    return product.id!; // Puede que haya que dejarlo ''
   }
 
   Future saveOrCreateProduct(Product product) async {
@@ -115,6 +117,19 @@ class ProductsService extends ChangeNotifier {
     return decodedData['secure_url'];
   }
 
+  Future<void> deleteProduct(String id) async {
+  final url = Uri.https(_baseUrl, 'products/$id.json');
+  final resp = await http.delete(url);
+
+  if (resp.statusCode == 200) {
+    products.removeWhere((product) => product.id == id);
+    notifyListeners();
+  } else {
+    throw Exception('Error al eliminar el producto');
+  }
+}
+
+
   Future<List<Product>> loadProducts() async {
     this.isLoading = true;
     notifyListeners();
@@ -131,7 +146,7 @@ class ProductsService extends ChangeNotifier {
       print('Producto cargado: ${tempProduct.name}, ID: ${tempProduct.id}');
     });
 
-    this.isLoading = false;
+    this.isLoading = false; 
     notifyListeners();
 
     print(this.products[0].name);
