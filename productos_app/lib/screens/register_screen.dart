@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:productos_app/services/auth_service.dart';
 import 'package:productos_app/widgets/register_form.dart';
 import 'package:productos_app/widgets/widgets.dart';
 
@@ -7,6 +8,8 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authService = AuthService();
+
     return Scaffold(
       body: AuthBackground(
         child: SingleChildScrollView(

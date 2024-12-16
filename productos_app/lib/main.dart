@@ -3,6 +3,7 @@ import 'package:productos_app/providers/login_form_provider.dart';
 import 'package:productos_app/screens/home_screen.dart';
 import 'package:productos_app/screens/login_screen.dart';
 import 'package:productos_app/screens/product_screen.dart';
+import 'package:productos_app/services/auth_service.dart';
 import 'package:productos_app/services/products_service.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,10 @@ class AppState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => ProductsService())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => ProductsService()),
+        ChangeNotifierProvider(create: (_) => AuthService()),
+      ],
       child: MyApp(),);
   }
 }
@@ -27,7 +31,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Productos App',
-        initialRoute: 'home', // ESTO HABRA QUE CAMBIARLO, mas tarde habra que hacer el LOGIN
+        initialRoute: 'login', // ESTO HABRA QUE CAMBIARLO, mas tarde habra que hacer el LOGIN
         theme: ThemeData(
           scaffoldBackgroundColor: Colors.grey[300],
           appBarTheme: const AppBarTheme(
