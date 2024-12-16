@@ -8,8 +8,6 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService();
-
     return Scaffold(
       body: AuthBackground(
         child: SingleChildScrollView(
