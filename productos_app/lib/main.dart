@@ -17,7 +17,8 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductsService()),
         ChangeNotifierProvider(create: (_) => AuthService()),
       ],
-      child: MyApp(),);
+      child: MyApp(),
+    );
   }
 }
 
@@ -31,7 +32,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Productos App',
-        initialRoute: 'login', // ESTO HABRA QUE CAMBIARLO, mas tarde habra que hacer el LOGIN
+        initialRoute:
+            'login', // ESTO HABRA QUE CAMBIARLO, mas tarde habra que hacer el LOGIN
         theme: ThemeData(
           scaffoldBackgroundColor: Colors.grey[300],
           appBarTheme: const AppBarTheme(

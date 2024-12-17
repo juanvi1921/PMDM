@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:productos_app/providers/login_form_provider.dart';
 import 'package:productos_app/widgets/login_form.dart';
 import 'package:provider/provider.dart';
 import '../services/services.dart';
@@ -11,8 +12,8 @@ class RegisterBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      onPressed: () {
-        /*loginForm.isLoading
+      onPressed:
+          /*loginForm.isLoading
           ? null
           : () async {
               FocusScope.of(context).unfocus();
@@ -33,10 +34,36 @@ class RegisterBtn extends StatelessWidget {
                 loginForm.isLoading = false;
               }
               */
+          () async {
+        // Validar el formulario primero
         if (formKey.currentState?.validate() ?? false) {
-          Future.delayed(const Duration(seconds: 2), () {
-            print('Formulario de registro válido');
-          });
+          // Ocultar el teclado
+          FocusScope.of(context).unfocus();
+
+          // Obtener el LoginFormProvider
+          final loginForm =
+              Provider.of<LoginFormProvider>(context, listen: false);
+
+          // Obtener el servicio de autenticación
+          final authService = Provider.of<AuthService>(context, listen: false);
+
+          // Aquí puedes mostrar un indicador de carga si es necesario
+
+          // Llamar al método para crear el usuario
+          try {
+            final String? errorMessage = await authService.createUser(
+              loginForm.email,
+              loginForm.password,
+            );
+            if (errorMessage == null) {
+              Navigator.pushReplacementNamed(context, 'home');
+            } else {
+              print(errorMessage); // Muestra el error detallado
+              print('ESTO ES UN ERROR');
+            }
+          } catch (e) {
+            print('Error al crear el usuario: $e');
+          }
         }
       },
       color: Colors.deepPurple,
