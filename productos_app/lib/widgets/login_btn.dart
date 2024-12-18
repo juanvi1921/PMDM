@@ -38,8 +38,9 @@ class LoginBtn extends StatelessWidget {
                 Navigator.pushReplacementNamed(context, 'home'); // O el nombre de la pantalla de inicio
               } else {
                 // Si ocurre un error, mostramos el error y restauramos el estado del botón
+                // Usamos NotificationService para mostrar el mensaje
+                _handleErrorMessage(errorMessage);
                 loginForm.isLoading = false;
-                print(errorMessage); // Puedes mostrar un mensaje de error si lo deseas
               }
             },
       color: Colors.deepPurple, // Color de fondo
@@ -62,5 +63,28 @@ class LoginBtn extends StatelessWidget {
               ),
             ),
     );
+  }
+
+  // Esta función se encarga de mostrar mensajes amigables dependiendo del error
+  void _handleErrorMessage(String errorMessage) {
+    String message;
+
+    switch (errorMessage) {
+      case 'wrong-password':
+        message = 'La contraseña es incorrecta. Intenta nuevamente.';
+        break;
+      case 'user-not-found':
+        message = 'No se encontró una cuenta con ese correo electrónico.';
+        break;
+      case 'network-request-failed':
+        message = 'Error de conexión. Verifica tu red e intenta de nuevo.';
+        break;
+      default:
+        message = 'Ocurrió un error desconocido. Intenta de nuevo más tarde.';
+        break;
+    }
+
+    // Muestra el mensaje amigable usando el NotificationService
+    NotificationService.showSnackbar(message);
   }
 }

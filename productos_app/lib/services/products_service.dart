@@ -1,9 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:productos_app/models/product.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart'; // Importa FlutterSecureStorage
 
 class ProductsService extends ChangeNotifier {
   File? newPictureFile;
@@ -23,12 +23,24 @@ class ProductsService extends ChangeNotifier {
   bool isLoading = true;
   bool isSaving = false;
 
+  final storage = const FlutterSecureStorage(); // Instancia de FlutterSecureStorage
+
   ProductsService() {
     this.loadProducts();
   }
 
+  // Función para obtener el token desde el almacenamiento seguro
+  Future<String?> _getAuthToken() async {
+    return await storage.read(key: 'auth_token'); // Lee el token guardado
+  }
+
   Future<String> updateProduct(Product product) async {
-    final url = Uri.https(_baseUrl, 'products/${product.id}.json');
+    final token = await _getAuthToken(); // Obtén el token
+
+    final url = Uri.https(_baseUrl, 'products/${product.id}.json', {
+      'auth': token ?? '', // Agrega el token a los queryParams
+    });
+
     final resp = await http.put(url, body: product.toJson());
     final decodeData = resp.body;
 
@@ -41,7 +53,12 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future<String> createProduct(Product product) async {
-    final url = Uri.https(_baseUrl, 'products.json');
+    final token = await _getAuthToken(); // Obtén el token
+
+    final url = Uri.https(_baseUrl, 'products.json', {
+      'auth': token ?? '', // Agrega el token a los queryParams
+    });
+
     final resp = await http.post(url, body: product.toJson());
     final decodeData = json.decode(resp.body);
 
@@ -122,7 +139,11 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final url = Uri.https(_baseUrl, 'products/$id.json');
+    final token = await _getAuthToken(); // Obtén el token
+
+    final url = Uri.https(_baseUrl, 'products/$id.json', {
+      'auth': token ?? '', // Agrega el token a los queryParams
+    });
     final resp = await http.delete(url);
 
     if (resp.statusCode == 200) {
@@ -137,22 +158,28 @@ class ProductsService extends ChangeNotifier {
     this.isLoading = true;
     notifyListeners();
 
-    final url = Uri.https(_baseUrl, 'products.json');
+    final token = await _getAuthToken(); // Obtén el token
+
+    final url = Uri.https(_baseUrl, 'products.json', {
+      'auth': token ?? '', // Agrega el token a los queryParams
+    });
+
     final resp = await http.get(url);
 
-    final Map<String, dynamic> productsMap = jsonDecode(resp.body);
+    print('Respuesta de Firebase: ${resp.body}'); // Depuración aquí.
 
-    productsMap.forEach((key, value) {
-      final tempProduct = Product.fromMap(value, key);
-      tempProduct.id = key;
-      this.products.add(tempProduct);
-      print('Producto cargado: ${tempProduct.name}, ID: ${tempProduct.id}');
-    });
+    try {
+      final Map<String, dynamic> productsMap = jsonDecode(resp.body);
+      productsMap.forEach((key, value) {
+        final tempProduct = Product.fromMap(value, key);
+        this.products.add(tempProduct);
+      });
+    } catch (e) {
+      print('Error al procesar los productos: $e');
+    }
 
     this.isLoading = false;
     notifyListeners();
-
-    print(this.products[0].name);
     return this.products;
   }
 }

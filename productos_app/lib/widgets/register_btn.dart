@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:productos_app/providers/login_form_provider.dart';
-import 'package:productos_app/widgets/login_form.dart';
 import 'package:provider/provider.dart';
 import '../services/services.dart';
 
@@ -8,6 +7,7 @@ class RegisterBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loginForm = Provider.of<LoginFormProvider>(context);
+
     return MaterialButton(
       onPressed:
           loginForm.isLoading
@@ -25,11 +25,14 @@ class RegisterBtn extends StatelessWidget {
                   loginForm.email, loginForm.password);
 
               if (errorMessage == null) {
-                Navigator.pushReplacementNamed(context, 'login'); //En el home no funciona
+                // Si el registro es exitoso, redirigimos al login
+                Navigator.pushReplacementNamed(context, 'login');
               } else {
-                print(errorMessage);
+                // Si ocurre un error, mostramos el mensaje amigable
+                _handleErrorMessage(errorMessage);
                 loginForm.isLoading = false;
               }
+
               print('email ${loginForm.email}');
               print('pass ${loginForm.password}');
           },
@@ -48,5 +51,31 @@ class RegisterBtn extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // Esta función se encarga de mostrar mensajes amigables dependiendo del error
+  void _handleErrorMessage(String errorMessage) {
+    String message;
+
+    switch (errorMessage) {
+      case 'email-already-in-use':
+        message = 'Este correo electrónico ya está en uso. Intenta con otro.';
+        break;
+      case 'weak-password':
+        message = 'La contraseña es demasiado débil. Elige una contraseña más fuerte.';
+        break;
+      case 'invalid-email':
+        message = 'El correo electrónico no es válido. Verifica e intenta de nuevo.';
+        break;
+      case 'network-request-failed':
+        message = 'Error de conexión. Verifica tu red e intenta de nuevo.';
+        break;
+      default:
+        message = 'Ocurrió un error desconocido. Intenta de nuevo más tarde.';
+        break;
+    }
+
+    // Muestra el mensaje amigable usando el NotificationService
+    NotificationService.showSnackbar(message);
   }
 }

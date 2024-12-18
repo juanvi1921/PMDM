@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:productos_app/providers/login_form_provider.dart';
 import 'package:productos_app/screens/check_auth_screen.dart';
 import 'package:productos_app/screens/home_screen.dart';
 import 'package:productos_app/screens/login_screen.dart';
 import 'package:productos_app/screens/product_screen.dart';
 import 'package:productos_app/services/auth_service.dart';
+import 'package:productos_app/services/notification_service.dart';
 import 'package:productos_app/services/products_service.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(AppState());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  runApp(AppState());
+}
 
 class AppState extends StatelessWidget {
   @override
@@ -34,7 +41,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Productos App',
         initialRoute:
-            'home', // ESTO HABRA QUE CAMBIARLO, mas tarde habra que hacer el LOGIN
+            'checking', // ESTO HABRA QUE CAMBIARLO, mas tarde habra que hacer el LOGIN
         theme: ThemeData(
           scaffoldBackgroundColor: Colors.grey[300],
           appBarTheme: const AppBarTheme(
@@ -52,6 +59,7 @@ class MyApp extends StatelessWidget {
           'home': (context) => const HomeScreen(),
           'product': (context) => const ProductScreen(),
         },
+        scaffoldMessengerKey: NotificationService.messengerKey,
       ),
     );
   }
