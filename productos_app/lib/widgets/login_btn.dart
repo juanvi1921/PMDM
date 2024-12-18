@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:productos_app/providers/login_form_provider.dart';
+import 'package:productos_app/services/services.dart';
+import 'package:provider/provider.dart'; // Asegúrate de importar el AuthService
 
 class LoginBtn extends StatelessWidget {
   final LoginFormProvider loginForm;
@@ -23,19 +25,21 @@ class LoginBtn extends StatelessWidget {
 
               loginForm.isLoading = true; // Indicamos que estamos cargando
 
-              await Future.delayed(
-                  const Duration(seconds: 2)); // Simulación de un retraso
+              final authService = Provider.of<AuthService>(context, listen: false);
 
-              bool loginSuccessful =
-                  false; // Aquí iría la lógica para comprobar el login
+              // Llamamos al método login
+              final String? errorMessage = await authService.loginUser(
+                loginForm.email,
+                loginForm.password,
+              );
 
-              if (loginSuccessful) {
-                print('Login exitoso, navegar a la siguiente pantalla');
-                // Aquí puedes redirigir a la pantalla siguiente
+              if (errorMessage == null) {
+                // Si el login es exitoso, redirigimos al home o pantalla siguiente
+                Navigator.pushReplacementNamed(context, 'home'); // O el nombre de la pantalla de inicio
               } else {
-                loginForm.isLoading =
-                    false; // Volver a habilitar el botón si el login falla
-                print('Login fallido, restauramos el botón');
+                // Si ocurre un error, mostramos el error y restauramos el estado del botón
+                loginForm.isLoading = false;
+                print(errorMessage); // Puedes mostrar un mensaje de error si lo deseas
               }
             },
       color: Colors.deepPurple, // Color de fondo
@@ -49,10 +53,8 @@ class LoginBtn extends StatelessWidget {
           ? const CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
             )
-          : Text(
-              loginForm.isLoading
-                  ? 'Espere'
-                  : 'Acceder', // Cambiar el texto según el estado
+          : const Text(
+              'Acceder', // Texto del botón
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600, // Estilo de texto

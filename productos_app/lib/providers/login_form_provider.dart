@@ -1,26 +1,14 @@
 import 'package:flutter/material.dart';
 
 class LoginFormProvider extends ChangeNotifier {
-  String _email = '';
-  String _password = '';
-
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  String email = '';
+  String password = '';
 
   bool _isLoading = false;
 
-  String get email => _email;
-  String get password => _password;
   bool get isLoading => _isLoading;
-
-  set email(String value) {
-    _email = value;
-    notifyListeners();
-  }
-
-  set password(String value) {
-    _password = value;
-    notifyListeners();
-  }
 
   set isLoading(bool value) {
     _isLoading = value;

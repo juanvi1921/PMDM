@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:productos_app/providers/login_form_provider.dart';
 import 'package:productos_app/ui/input_decorations.dart';
 import 'package:productos_app/widgets/register_btn.dart';
 
 class RegisterForm extends StatelessWidget {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   RegisterForm({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final loginForm = Provider.of<LoginFormProvider>(context);
+
     return Form(
-      key: _formKey,
+      key: loginForm.formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
           _buildUsernameField(),
           const SizedBox(height: 20),
-          _buildEmailField(),
+          _buildEmailField(loginForm),
           const SizedBox(height: 20),
-          _buildPasswordField(),
+          _buildPasswordField(loginForm),
           const SizedBox(height: 20),
           _buildPhoneField(),
           const SizedBox(height: 20),
@@ -26,7 +28,7 @@ class RegisterForm extends StatelessWidget {
           const SizedBox(height: 20),
           _buildBirthDateField(),
           const SizedBox(height: 30),
-          RegisterBtn(formKey: _formKey),
+          RegisterBtn(),
         ],
       ),
     );
@@ -47,13 +49,14 @@ class RegisterForm extends StatelessWidget {
     );
   }
 
-  Widget _buildEmailField() {
+  Widget _buildEmailField(LoginFormProvider loginForm) {
     return TextFormField(
       decoration: InputDecorations.authInputDecoration(
         labelText: 'Correo electrónico',
         icon: Icons.email,
       ),
       keyboardType: TextInputType.emailAddress,
+      onChanged: (value) => loginForm.email = value,
       validator: (value) {
         String pattern =
             r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -69,13 +72,14 @@ class RegisterForm extends StatelessWidget {
     );
   }
 
-  Widget _buildPasswordField() {
+  Widget _buildPasswordField(LoginFormProvider loginForm) {
     return TextFormField(
       decoration: InputDecorations.authInputDecoration(
         labelText: 'Contraseña',
         icon: Icons.lock_outline,
       ),
       obscureText: true,
+      onChanged: (value) => loginForm.password = value,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Por favor ingresa tu contraseña';

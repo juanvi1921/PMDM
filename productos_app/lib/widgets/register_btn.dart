@@ -5,15 +5,12 @@ import 'package:provider/provider.dart';
 import '../services/services.dart';
 
 class RegisterBtn extends StatelessWidget {
-  final GlobalKey<FormState> formKey;
-
-  const RegisterBtn({Key? key, required this.formKey}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
+    final loginForm = Provider.of<LoginFormProvider>(context);
     return MaterialButton(
       onPressed:
-          /*loginForm.isLoading
+          loginForm.isLoading
           ? null
           : () async {
               FocusScope.of(context).unfocus();
@@ -28,44 +25,14 @@ class RegisterBtn extends StatelessWidget {
                   loginForm.email, loginForm.password);
 
               if (errorMessage == null) {
-                Navigator.pushReplacementNamed(context, 'home');
+                Navigator.pushReplacementNamed(context, 'login'); //En el home no funciona
               } else {
                 print(errorMessage);
                 loginForm.isLoading = false;
               }
-              */
-          () async {
-        // Validar el formulario primero
-        if (formKey.currentState?.validate() ?? false) {
-          // Ocultar el teclado
-          FocusScope.of(context).unfocus();
-
-          // Obtener el LoginFormProvider
-          final loginForm =
-              Provider.of<LoginFormProvider>(context, listen: false);
-
-          // Obtener el servicio de autenticación
-          final authService = Provider.of<AuthService>(context, listen: false);
-
-          // Aquí puedes mostrar un indicador de carga si es necesario
-
-          // Llamar al método para crear el usuario
-          try {
-            final String? errorMessage = await authService.createUser(
-              loginForm.email,
-              loginForm.password,
-            );
-            if (errorMessage == null) {
-              Navigator.pushReplacementNamed(context, 'home');
-            } else {
-              print(errorMessage); // Muestra el error detallado
-              print('ESTO ES UN ERROR');
-            }
-          } catch (e) {
-            print('Error al crear el usuario: $e');
-          }
-        }
-      },
+              print('email ${loginForm.email}');
+              print('pass ${loginForm.password}');
+          },
       color: Colors.deepPurple,
       textColor: Colors.white,
       padding: const EdgeInsets.symmetric(vertical: 10.0),

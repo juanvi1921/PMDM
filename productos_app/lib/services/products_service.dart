@@ -7,8 +7,10 @@ import 'dart:io';
 
 class ProductsService extends ChangeNotifier {
   File? newPictureFile;
+
   final String _baseUrl =
       'flutter-varios-be841-default-rtdb.europe-west1.firebasedatabase.app';
+
   final List<Product> products = [];
   late Product selectedProduct = Product(
     id: '',
@@ -60,24 +62,23 @@ class ProductsService extends ChangeNotifier {
 
     // Subir imagen si existe un archivo nuevo
     if (newPictureFile != null) {
-        final imageUrl = await uploadImage(newPictureFile!.path);
-        if (imageUrl != null) {
-            product.picture = imageUrl;
-        }
+      final imageUrl = await uploadImage(newPictureFile!.path);
+      if (imageUrl != null) {
+        product.picture = imageUrl;
+      }
     }
 
     if (product.id == null) {
-        await createProduct(product);
+      await createProduct(product);
     } else {
-        await updateProduct(product);
+      await updateProduct(product);
     }
 
     isSaving = false;
     notifyListeners();
-}
+  }
 
-
-  void updateSelectedProductImage(String path) { 
+  void updateSelectedProductImage(String path) {
     selectedProduct.picture = path;
     newPictureFile = File.fromUri(Uri(path: path));
 
@@ -85,16 +86,18 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future<String?> uploadImage(String path) async {
-    if(newPictureFile == null) return null;
+    if (newPictureFile == null) return null;
 
     isSaving = true;
     notifyListeners();
 
-    final url = Uri.parse('https://api.cloudinary.com/v1_1/dchqrt0fd/image/upload?upload_preset=xsyldmjh');
+    final url = Uri.parse(
+        'https://api.cloudinary.com/v1_1/dchqrt0fd/image/upload?upload_preset=xsyldmjh');
 
     final imageUploadRequest = http.MultipartRequest('POST', url);
 
-    final file = await http.MultipartFile.fromPath('file', newPictureFile!.path);
+    final file =
+        await http.MultipartFile.fromPath('file', newPictureFile!.path);
 
     imageUploadRequest.files.add(file);
 
@@ -104,7 +107,8 @@ class ProductsService extends ChangeNotifier {
     if (resp.statusCode != 200 && resp.statusCode != 201) {
       print('Ha habido un error');
       print(resp.body);
-      isSaving = false; // Asegurarse de que el indicador desaparezca en caso de error
+      isSaving =
+          false; // Asegurarse de que el indicador desaparezca en caso de error
       notifyListeners();
       return null;
     }
@@ -118,17 +122,16 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-  final url = Uri.https(_baseUrl, 'products/$id.json');
-  final resp = await http.delete(url);
+    final url = Uri.https(_baseUrl, 'products/$id.json');
+    final resp = await http.delete(url);
 
-  if (resp.statusCode == 200) {
-    products.removeWhere((product) => product.id == id);
-    notifyListeners();
-  } else {
-    throw Exception('Error al eliminar el producto');
+    if (resp.statusCode == 200) {
+      products.removeWhere((product) => product.id == id);
+      notifyListeners();
+    } else {
+      throw Exception('Error al eliminar el producto');
+    }
   }
-}
-
 
   Future<List<Product>> loadProducts() async {
     this.isLoading = true;
@@ -146,7 +149,7 @@ class ProductsService extends ChangeNotifier {
       print('Producto cargado: ${tempProduct.name}, ID: ${tempProduct.id}');
     });
 
-    this.isLoading = false; 
+    this.isLoading = false;
     notifyListeners();
 
     print(this.products[0].name);

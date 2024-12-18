@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:productos_app/providers/login_form_provider.dart';
+import 'package:productos_app/screens/check_auth_screen.dart';
 import 'package:productos_app/screens/home_screen.dart';
 import 'package:productos_app/screens/login_screen.dart';
 import 'package:productos_app/screens/product_screen.dart';
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Productos App',
         initialRoute:
-            'login', // ESTO HABRA QUE CAMBIARLO, mas tarde habra que hacer el LOGIN
+            'home', // ESTO HABRA QUE CAMBIARLO, mas tarde habra que hacer el LOGIN
         theme: ThemeData(
           scaffoldBackgroundColor: Colors.grey[300],
           appBarTheme: const AppBarTheme(
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         routes: {
+          'checking': (_) => const CheckAuthScreen(),
           'login': (context) => const LoginScreen(),
           'home': (context) => const HomeScreen(),
           'product': (context) => const ProductScreen(),
